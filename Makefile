@@ -167,15 +167,11 @@ clean:
 	@echo "$(YELLOW)🪹 Cleaning object files...$(RESET)"
 	@rm -rf $(OBJ_DIR)
 	@make -sC $(LIBFT_DIR) clean
-	@echo "$(YELLOW)🧹 Cleaning Valgrind logs...$(RESET)"
-	@rm -f valgrind_*.log valgrind.log
 
 fclean: clean
 	@echo "$(YELLOW)💫 Removing executable...$(RESET)"
 	@rm -f $(NAME)
 	@echo "$(YELLOW)🧹 Cleaning Valgrind logs...$(RESET)"
-	@rm -f valgrind_*.log valgrind.log
-	@make -sC $(LIBFT_DIR) fclean
 
 re: fclean all
 

@@ -76,6 +76,7 @@ void	free_map_data(t_game *game)
  */
 void	cleanup(t_game *game)
 {
+	free_static_images(game);
 	free_graphics(game);
 	free_map_data(game);
 }

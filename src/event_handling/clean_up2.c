@@ -28,6 +28,7 @@ void	null_all_images(t_game *game)
 	game->img_collectible = NULL;
 	game->img_win = NULL;
 	game->img_lost = NULL;
+	game->img_blocked_exit = NULL;
 }
 
 /*
