@@ -18,10 +18,9 @@
 - [Esecuzione](#esecuzione)
 - [Gameplay 🎮](#gameplay-)
 - [Bonus 🧠](#bonus-)
-- [Contatti 🧑‍💻](#contatti-)
 - [Previw Mandatory](#preview_mandatory)
 - [Previw Bonus](#preview_bonus)
-
+- [Contatti 🧑‍💻](#contatti-)
 
 --
 ## Descrizione 📖
@@ -79,6 +78,10 @@ La versione bonus include:
 - Schermate di intro, vittoria e sconfitta.
 - Messaggio temporaneo se si tenta di uscire senza aver raccolto tutto.
 - Conteggio mosse in sovraimpressione.
+
+## Preview_mandatory
+
+![Preview_mandatory](mandatory.gif)
 
 ## Contatti 🧑‍💻
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-blue?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/viorica-gabriela-hacman-63a412267/)
