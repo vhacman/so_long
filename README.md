@@ -13,7 +13,7 @@
 
 ## 📚 Indice
 - [Descrizione 📖](#descrizione-)
-- [Documentazione 📄](https://www.notion.so/SO_LONG-1ee848c2064d807bba53c6b669995213?pvs=4)
+- [Documentazione 📄](#documentazione-)
 - [Requisiti 📦](#requisiti-)
 - [Build](#build)
 - [Esecuzione](#esecuzione)
@@ -34,7 +34,7 @@ Il progetto prevede due versioni:
 
 ---
 ## Documentazione 📄
-
+- [Documentazione 📄](https://www.notion.so/SO_LONG-1ee848c2064d807bba53c6b669995213?pvs=4)
 
 ## Requisiti 📦
 
