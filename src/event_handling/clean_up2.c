@@ -13,11 +13,15 @@
 #include "so_long.h"
 
 /*
- * Resets all image pointers in the game struct to NULL.
- * - Prevents use-after-free errors by clearing all image references.
- * - Includes all major graphical assets: player (left/right), wall,
- *   exit, background, collectible, win, and lost screens.
- */
+** Sets all image pointers in the game structure to NULL.
+** - Prevents accidental reuse of freed images.
+** - Must be called after freeing images with mlx_destroy_image().
+** - Covers all static image resources: player, wall, exit,
+**   background, collectibles, and end screens.
+**
+** Parameters:
+** - game: pointer to the game structure with image fields.
+*/
 void	null_all_images(t_game *game)
 {
 	game->img_player_right = NULL;
@@ -32,14 +36,16 @@ void	null_all_images(t_game *game)
 }
 
 /*
- * Frees all static image assets used in the game.
- * - Destroys each image using mlx_destroy_image() if both the MLX
- *   context and image pointer are valid.
- * - Covers all non-animated images including:
- *   intro screen, player sprites, wall, exit, blocked exit,
- *   background, collectible, win, and lost images.
- * - Avoids double free or invalid memory access by checking pointers.
- */
+** Frees all static images allocated with MLX during the game.
+** - Each image is destroyed only if both the MLX context and image
+**   pointer are valid.
+** - Avoids invalid memory access by checking each image.
+** - Frees intro screen, blocked message, all player sprites,
+**   wall, background, collectible, exit, win, and lost images.
+**
+** Parameters:
+** - game: pointer to the game structure containing MLX and image handles.
+*/
 void	free_static_images(t_game *game)
 {
 	if (game->mlx && game->img_blocked_exit)

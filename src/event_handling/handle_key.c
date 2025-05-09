@@ -13,16 +13,19 @@
 #include "so_long.h"
 
 /*
- * Handles keyboard input from the user during gameplay.
- * - KEY_ESC: exits the game by calling cleanup() and exit().
- * - KEY_W / KEY_UP: moves the player up.
- * - KEY_S / KEY_DOWN: moves the player down.
- * - KEY_A / KEY_LEFT: moves the player left.
- * - KEY_D / KEY_RIGHT: moves the player right.
- * - After movement, the game state is updated and render() is called
- *   externally if needed.
- * - Returns 0 to comply with MLX hook requirements.
- */
+** Handles keypress events during gameplay.
+** - Supports movement keys and ESC for exiting.
+** - Directional keys (WASD or arrows) trigger player movement.
+** - ESC key triggers cleanup and terminates the game.
+** - Each movement call internally handles rendering and state updates.
+**
+** Parameters:
+** - key: keycode of the pressed key.
+** - game: pointer to the game structure containing state and context.
+**
+** Return:
+** - Always returns 0 to conform to MLX hook function requirements.
+*/
 int	handle_key(int key, t_game *game)
 {
 	if (key == KEY_ESC)
@@ -42,11 +45,16 @@ int	handle_key(int key, t_game *game)
 }
 
 /*
- * Handles the window close event (clicking the red X).
- * - Frees all allocated game resources using cleanup().
- * - Exits the program cleanly with exit(0).
- * - Returns 0 to satisfy the MLX event hook system.
- */
+** Handles the window close event (e.g. clicking the "X").
+** - Frees all dynamically allocated game resources.
+** - Terminates the program using exit(0).
+**
+** Parameters:
+** - game: pointer to the game structure to be cleaned up.
+**
+** Return:
+** - Always returns 0 to satisfy MLX hook signature.
+*/
 int	handle_destroy(t_game *game)
 {
 	cleanup(game);

@@ -13,11 +13,16 @@
 #include "so_long.h"
 
 /*
- * Cleans up each row of the map by removing line-ending characters.
- * - Iterates through all rows of game->map.
- * - Removes trailing '\n' or '\r' characters by replacing them with '\0'.
- * - Ensures correct map parsing and prevents layout issues.
- */
+** Removes trailing newline and carriage return characters from
+** each row of the map to normalize input.
+** - Iterates through all strings in `game->map`.
+** - Strips '\n' and '\r' from the end of each line by replacing
+**   them with a null-terminator.
+** - Prevents issues during tile comparisons and rendering logic.
+**
+** Parameters:
+** - game: pointer to the game structure containing the map.
+*/
 void	clean_map(t_game *game)
 {
 	int	i;
@@ -38,11 +43,16 @@ void	clean_map(t_game *game)
 }
 
 /*
- * Prints an error message to stderr and exits the program.
- * - If flag == 1, calls cleanup() to free game resources.
- * - Uses ft_putstr_fd() for output and exit(EXIT_FAILURE) to abort.
- * - Ensures clean termination in case of errors.
- */
+** Prints an error message to stderr and terminates the program.
+** - If `flag` is set to 1, invokes cleanup() to free game resources.
+** - Uses ft_putstr_fd() to print the error message.
+** - Exits with status code EXIT_FAILURE (1).
+**
+** Parameters:
+** - msg: error message to be printed.
+** - game: pointer to the game structure (used by cleanup if needed).
+** - flag: whether to call cleanup before exiting (1 = yes, 0 = no).
+*/
 void	exit_with_error(char *msg, t_game *game, int flag)
 {
 	ft_putstr_fd(msg, 2);
@@ -52,12 +62,21 @@ void	exit_with_error(char *msg, t_game *game, int flag)
 }
 
 /*
- * Verifies if a character is valid within the map context.
- * - Allowed characters: 
- *   '0' = empty, '1' = wall, 'C' = collectible,
- *   'E' = exit, 'P' = player, 'X' = enemy.
- * - Returns 1 for valid characters, 0 for invalid.
- */
+** Validates whether a character is allowed in the map layout.
+** - Acceptable characters:
+**   '0' = empty space
+**   '1' = wall
+**   'C' = collectible
+**   'E' = exit
+**   'P' = player
+**   'X' = enemy (optional for bonus).
+**
+** Parameters:
+** - c: character to validate.
+**
+** Return:
+** - 1 if valid, 0 otherwise.
+*/
 int	is_valid_char(char c)
 {
 	return (c == '0' || c == '1' || c == 'C'
