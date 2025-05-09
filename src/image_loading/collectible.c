@@ -13,19 +13,22 @@
 #include "so_long.h"
 
 /*
- * Displays a temporary message when the player steps on the exit
- * without collecting all collectibles.
- * - Uses a frame-based counter instead of time.
- * - If game->blocked_msg_counter < 30 (≈0.5 sec at 60 FPS),
- *   the image is drawn centered in the window.
- * - Otherwise, the message is hidden by setting
- *   game->blocked_msg_shown = 0 and resetting the counter.
- */
+** Displays the "exit blocked" message at the center of the window.
+** Only renders the image if `blocked_msg_shown` is non-zero.
+** The image is shown for a limited number of frames, controlled by
+** `blocked_msg_counter`, which is incremented on each call until it 
+** reaches 0.5. After that, both `blocked_msg_shown` and the counter 
+** are reset to disable the message display.
+**
+** Parameters:
+** - game: a pointer to the game structure containing rendering context,
+**         message flags, image pointer, and window dimensions.
+*/
 void	draw_blocked_exit_message(t_game *game)
 {
 	if (!game->blocked_msg_shown)
 		return ;
-	if (game->blocked_msg_counter < 5)
+	if (game->blocked_msg_counter < 0.5)
 	{
 		mlx_put_image_to_window(game->mlx, game->window,
 			game->img_blocked_exit,
@@ -41,14 +44,19 @@ void	draw_blocked_exit_message(t_game *game)
 }
 
 /*
- * Loads the image used for the "blocked exit" popup.
- * - Loads the XPM file: "src/textures/banner.xpm".
- * - Stores image pointer in game->img_blocked_exit.
- * - Stores width and height of the image in
- *   game->blocked_exit_width and game->blocked_exit_height.
- * - Exits with an error if the image fails to load.
- * - This image is used in draw_blocked_exit_message().
- */
+** Loads the "exit blocked" banner image from the XPM file and stores it
+** in the `img_blocked_exit` pointer within the game structure.
+** The image is expected at path "src/textures/banner.xpm".
+** Also stores the image width and height into `blocked_exit_width`
+** and `blocked_exit_height` for positioning during rendering.
+**
+** If the image fails to load, the program is terminated using
+** `exit_with_error`, releasing all allocated resources.
+**
+** Parameters:
+** - game: a pointer to the game structure containing MLX context and
+**         image-related fields.
+*/
 void	load_blocked_exit_image(t_game *game)
 {
 	game->img_blocked_exit = mlx_xpm_file_to_image(game->mlx,

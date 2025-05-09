@@ -109,24 +109,25 @@ static void	check_args(int argc, char **argv)
 }
 
 /*
- * Entry point of the program.
- * - Clears memory of game struct using ft_bzero().
- * - Validates args and map filename.
- * - Initializes game state and loads map.
- * - Loads and shows the intro image for 2 seconds:
- *   → Uses mlx_put_image_to_window() to display it centered.
- *   → Uses mlx_do_sync() and sleep() for timing.
- * - Loads all game assets using load_assets().
- * - Registers event handlers:
- *   → handle_key for keyboard input (mlx_hook, code 2).
- *   → handle_destroy for window close (mlx_hook, code 17).
- *   → game_loop as lomlx_put_image_to_window(game.mlx, game.window,
-		game.img_intro,
-		(game.window_width - game.intro_width) / 2,
-		(game.window_height - game.intro_height) / 2);op hook (mlx_loop_hook).
- * - Starts the rendering and event loop with mlx_loop().
- * - Returns 0 at the end, though it never exits normally.
- */
+** Entry point of the program. Initializes the game environment and 
+** starts the graphical event loop. 
+** Performs the following steps:
+** 1. Clears the `game` structure using `ft_bzero`.
+** 2. Validates command-line arguments.
+** 3. Initializes the game state and window via `init_game`.
+** 4. Loads the intro image to be displayed at startup.
+** 5. Sets intro animation flags (`intro_done` and `intro_frame`).
+** 6. Registers the `intro_loop` to run on each iteration of the MLX loop.
+** 7. Sets up keypress and window close event handlers.
+** 8. Starts the infinite MLX event loop for rendering and input handling.
+**
+** Parameters:
+** - argc: number of command-line arguments.
+** - argv: array of command-line argument strings.
+**
+** Return:
+** - Always returns 0 on successful termination.
+*/
 int	main(int argc, char **argv)
 {
 	t_game	game;

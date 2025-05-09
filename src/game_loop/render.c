@@ -13,10 +13,15 @@
 #include "so_long.h"
 
 /*
- * Determines if enough frames have passed since win.
- * - Uses a static counter to delay for approx. duration.
- * - Assumes ~60 FPS (approx. 120 frames ≈ 2 seconds).
- */
+** Determines whether a sufficient number of frames have passed
+** to trigger program termination after a win.
+** - Uses a static variable `frame_count` to persist across calls.
+** - Increments the counter every frame.
+** - Returns 1 when 720 frames have passed (approx. 12 seconds at 60 FPS).
+**
+** Return:
+** - 1
+*/
 static int	should_exit_after_delay(void)
 {
 	static int	frame_count = 0;
@@ -26,18 +31,20 @@ static int	should_exit_after_delay(void)
 }
 
 /*
- * Handles the win state display and delayed program termination.
- * - If the win image has not yet been shown (shown == 0):
- *   → Calculates screen center using window dimensions and image size.
- *   → Displays the win image at the center using mlx_put_image_to_window().
- *   → Stores the current time into game->win_time using gettimeofday()
- *     to later measure how long the win image has been displayed.
- *   → Sets *shown = 1 to ensure this block is executed only once.
- * - If the image has already been shown:
- *   → Calls should_exit_after_delay() to check if 2 seconds passed.
- *   → If yes, calls cleanup() to free all resources, then exits.
- * - Ensures the win screen is visible before exiting the game.
- */
+** Displays the win screen and exits the program after a delay.
+** - If the win image has not yet been shown, it is rendered once at
+**   the center of the window and the `shown` flag is set.
+** - On subsequent calls, checks if the delay period has passed
+**   using `should_exit_after_delay()`.
+** - If yes, performs cleanup and terminates the program.
+**
+** Parameters:
+** - game: pointer to the game structure with rendering state.
+** - shown: pointer to static flag used to ensure image is shown only once.
+**
+** Return:
+** - Always returns 0 to comply with MLX hook signature.
+*/
 static int	handle_win(t_game *game, int *shown)
 {
 	int	x;
@@ -60,13 +67,16 @@ static int	handle_win(t_game *game, int *shown)
 }
 
 /*
- * Game loop function registered with mlx_loop_hook.
- * - Executed every frame.
- * - Manages delayed shutdown after a win condition is triggered.
- * - Uses a static variable (shown) to ensure win image is displayed once.
- * - Continuously checks if it’s time to exit the game after showing the win.
- * - Returns 0 to comply with MLX hook function requirements.
- */
+** Main rendering loop called repeatedly by MLX after the intro phase.
+** - If `game->won` is true, initiates the win sequence via `handle_win()`.
+** - Uses a static flag to track whether the win image was already shown.
+**
+** Parameters:
+** - game: pointer to the game structure used throughout the loop.
+**
+** Return:
+** - Always returns 0 to comply with MLX loop hook requirements.
+*/
 int	game_loop(t_game *game)
 {
 	static int	shown = 0;
@@ -77,14 +87,14 @@ int	game_loop(t_game *game)
 }
 
 /*
- *   Draws static collectible tiles on the map.
- * - Iterates through the entire game->map array.
- * - For every tile containing 'C' (collectible), calculates its screen
- *   position based on a 64-pixel tile size.
- * - Calls mlx_put_image_to_window() to draw game->img_collectible at
- *   (x * 64, y * 64).
- * - Used instead of animated collectibles in the mandatory version.
- */
+** Draws static collectible items on all tiles marked with 'C'.
+** - Assumes tile size of 64 pixels.
+** - Iterates through the map grid and places `img_collectible`
+**   at the corresponding screen coordinates for each 'C' tile.
+**
+** Parameters:
+** - game: pointer to the game structure containing map and image data.
+*/
 void	draw_collectibles(t_game *game)
 {
 	int	tile_size;
@@ -108,17 +118,15 @@ void	draw_collectibles(t_game *game)
 }
 
 /*
- * Renders all visible components of the game screen.
- * - Calls in correct order to layer tiles properly:
- *   → draw_background() first to cover the full screen.
- *   → draw_walls() overlays wall tiles on top.
- *   → draw_collectibles() places each collectible at its map position.
- *   → draw_player() places the player sprite.
- *   → draw_exit() places the exit tile image at its fixed location.
- *   → draw_blocked_exit_message() optionally shows a warning if the
- *     player steps on the exit without collecting all collectibles.
- * - This function is triggered after every state change to update display.
- */
+** Redraws the full game screen by calling all necessary render functions
+** in correct order to preserve visual layering.
+** - Background tiles are drawn first to cover the entire window.
+** - Walls, collectibles, player, exit, and blocked message are drawn
+**   in sequence to overlay foreground elements.
+**
+** Parameters:
+** - game: pointer to the game structure containing all game state and assets.
+*/
 void	render(t_game *game)
 {
 	draw_background(game);

@@ -13,16 +13,19 @@
 #include "so_long.h"
 
 /*
- * Loads the introductory splash screen image.
- * - Path: "src/textures/intro.xpm".
- * - Uses mlx_xpm_file_to_image() to load the image into game->img_intro.
- * - Retrieves image dimensions and stores them in game->intro_width and
- *   game->intro_height for later centering on screen.
- * - If loading fails, exits immediately with an error.
- * - Sets game->intro_shown = 0 
- *   to indicate that the intro has not been displayed yet.
- * - This image is shown at the beginning before the game starts.
- */
+** Loads the intro image from an XPM file and stores it in the 
+** `img_intro` field of the game structure. The image is loaded from 
+** the path "src/textures/intro.xpm" using MLX.
+** Also retrieves and stores the image dimensions in `intro_width` and 
+** `intro_height`, used for centering during rendering.
+**
+** If the image fails to load, the program exits via `exit_with_error`.
+** Sets `intro_shown` to 0 to indicate that the intro has not been displayed yet.
+**
+** Parameters:
+** - game: pointer to the game structure where the image and dimensions
+**         will be stored, and where error handling context resides.
+*/
 void	load_intro_image(t_game *game)
 {
 	game->img_intro = mlx_xpm_file_to_image(game->mlx,

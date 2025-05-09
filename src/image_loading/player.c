@@ -13,17 +13,17 @@
 #include "so_long.h"
 
 /*
- * Loads the player sprite images.
- * - Verifies the presence of two .xpm files: player_right.xpm
- *    and player_left.xpm.
- * - Uses has_xpm_extension() to ensure the file format is correct.
- * - Uses mlx_xpm_file_to_image() to load each image into MLX.
- *   → Requires img_width and img_height (not used here).
- * - Stores the right-facing image in game->img_player_right.
- * - Stores the left-facing image in game->img_player_left.
- * - Sets game->player_direction to 1 (right) by default.
- * - If either image fails to load, calls exit_with_error() to terminate.
- */
+** Loads the player's sprite images for both directions.
+** - Validates that the image files have a ".xpm" extension.
+** - Loads "player_right.xpm" into `img_player_right`.
+** - Loads "player_left.xpm" into `img_player_left`.
+** - Uses `mlx_xpm_file_to_image()` to load each image via the MLX API.
+** - Sets the initial player direction to 1 (facing right).
+** - If any image fails to load, terminates the program with an error.
+**
+** Parameters:
+** - game: pointer to the game structure where image handles and state are stored.
+*/
 void	load_player(t_game *game)
 {
 	int	img_width;
@@ -47,15 +47,17 @@ void	load_player(t_game *game)
 }
 
 /*
- * Draws the player sprite based on its current direction.
- * - Tile size is assumed to be 64x64 pixels.
- * - Checks game->player_direction:
- *   → 1 = facing right → draw img_player_right.
- *   → -1 = facing left → draw img_player_left.
- * - Uses player_x and player_y to compute pixel coordinates.
- * - Calls mlx_put_image_to_window() to render the correct sprite
- *   at (player_x * 64, player_y * 64) on the game window.
- */
+** Renders the player's sprite at the correct position and orientation.
+** - Uses `player_direction` to select the correct sprite image:
+**   → 1 for right-facing, -1 for left-facing.
+** - Computes the drawing position by scaling `player_x` and `player_y`
+**   by the tile size (64 pixels).
+** - Calls `mlx_put_image_to_window()` to draw the sprite in the window.
+**
+** Parameters:
+** - game: pointer to the game structure containing player position,
+**         direction, image handles, and rendering context.
+*/
 void	draw_player(t_game *game)
 {
 	int	tile_size;

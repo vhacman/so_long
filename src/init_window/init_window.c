@@ -12,6 +12,24 @@
 
 #include "so_long.h"
 
+/*
+** Loop hook function executed repeatedly during the intro phase.
+** Displays the intro image on the first frame by centering it in the
+** window. The image remains on screen while `intro_frame` is incremented
+** until it reaches 10000, simulating a delay.
+**
+** Once the frame counter reaches the threshold, the intro ends by:
+** - Setting `intro_done` to 1 to prevent repeated execution.
+** - Loading the main game assets via `load_assets`.
+** - Replacing the current loop hook with `game_loop` for gameplay.
+**
+** Parameters:
+** - game: pointer to the game structure containing intro flags,
+**         frame count, image, and rendering context.
+**
+** Return:
+** - Always returns 0, as required by MLX hook conventions.
+*/
 int	intro_loop(t_game *game)
 {
 	if (!game->intro_done)
@@ -35,15 +53,18 @@ int	intro_loop(t_game *game)
 }
 
 /*
- * Initializes the MiniLibX graphical context and creates the game window.
- * - Calls mlx_init() to initialize MLX. Returns a pointer to the MLX instance.
- *   → If NULL, MLX failed to initialize → print error and exit.
- * - Calls mlx_new_window() to open a window with given width, height, and title.
- *   → If NULL, window creation failed → print error and exit.
- * - Stores the window dimensions in game->window_width and game->window_height.
- * - Required before any rendering can occur (images, text, events).
- * - Must be called after calculating window size based on map dimensions.
- */
+** Initializes the MLX graphical context and creates a new game window.
+** If MLX initialization fails, prints an error and exits the program.
+** If window creation fails after MLX is initialized, prints another
+** error and exits. Upon success, stores window dimensions into the
+** `window_width` and `window_height` fields of the game structure.
+**
+** Parameters:
+** - game: pointer to the game structure to store MLX and window handles.
+** - width: desired width of the window in pixels.
+** - height: desired height of the window in pixels.
+** - title: string to be used as the window title.
+*/
 void	init_window(t_game *game, int width, int height, char *title)
 {
 	game->mlx = mlx_init();

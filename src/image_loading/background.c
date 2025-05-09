@@ -13,12 +13,17 @@
 #include "so_long.h"
 
 /*
- * Checks if a filename ends with ".xpm".
- * - Used to validate that texture files have the correct format.
- * - Computes the string length, then compares the last 4 characters.
- * - Returns 1 if the extension is correct, 0 otherwise.
- * - Prevents loading of unsupported or invalid image formats.
- */
+** Checks whether the given filename ends with the ".xpm" extension.
+** - Returns 1 if the f_name is at least 4 characters long and ends with ".xpm"
+** - Returns 0 otherwise.
+** - Prevents invalid image formats from being loaded.
+**
+** Parameters:
+** - filename: pointer to the string containing the file name or path.
+**
+** Return:
+** - 1 if the file ends in ".xpm", 0 if not.
+*/
 int	has_xpm_extension(const char *filename)
 {
 	int	len;
@@ -30,15 +35,16 @@ int	has_xpm_extension(const char *filename)
 }
 
 /*
- * Loads the background image and stores it in game->img_background.
- * - Uses a hardcoded file path: "src/textures/background.xpm".
- * - Verifies the file extension is ".xpm" before attempting to load.
- * - Calls mlx_xpm_file_to_image() to load the image into memory.
- *   → This function requires width and height pointers, even if values
- *     are unused.
- * - Exits the program with an error message if the image fails to load.
- * - The background will be used to tile the entire game window.
- */
+** Loads the background image from a fixed path and stores it in the
+** game structure.
+** - Validates that the file extension is ".xpm".
+** - Loads the image using mlx_xpm_file_to_image().
+** - If loading fails, exits the program with an error.
+** - The image will later be drawn repeatedly to fill the window.
+**
+** Parameters:
+** - game: pointer to the game structure where the image is stored.
+*/
 void	load_background(t_game *game)
 {
 	int			img_width;
@@ -55,16 +61,16 @@ void	load_background(t_game *game)
 }
 
 /*
- * Draws the background image across the entire game window.
- * - Each image tile is 64x64 pixels (tile_size = 64).
- * - Calculates how many columns and rows are needed based on the
- *   window size stored in game->window_width/height.
- * - Uses two nested loops to draw the background image repeatedly
- *   to cover the full window surface.
- * - mlx_put_image_to_window() places one image per tile location
- *   using coordinates (col * tile_size, row * tile_size).
- * - Ensures no unpainted areas by filling the screen completely.
- */
+** Tiles the background image across the entire game window.
+** - Calculates the number of columns and rows needed based on a fixed
+**   tile size of 64 pixels and the window dimensions.
+** - Uses nested loops to draw the image at each tile position.
+** - Ensures full window coverage with no empty space.
+**
+** Parameters:
+** - game: pointer to the game structure containing rendering context
+**         and the loaded background image.
+*/
 void	draw_background(t_game *game)
 {
 	int	row_index;

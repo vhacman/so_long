@@ -13,14 +13,18 @@
 #include "so_long.h"
 
 /*
- * Loads the wall texture used to render the solid boundaries in the map.
- * - Expects the file "src/textures/wall.xpm" to be present and valid.
- * - Validates that the file has a ".xpm" extension with has_xpm_extension().
- * - Uses mlx_xpm_file_to_image() to load the image into game->img_wall.
- *   → Also retrieves the image width and height (unused here).
- * - If the image fails to load, prints an error and exits the program.
- * - This image will be drawn on every tile marked '1' in the map.
- */
+** Loads the wall texture from an XPM file to be used as the visual
+** representation of walls in the game map.
+** - Validates the file extension is ".xpm" using has_xpm_extension().
+** - Uses mlx_xpm_file_to_image() to load the texture and assigns it
+**   to `img_wall` in the game structure.
+** - Image width and height are retrieved but not used here.
+** - If loading fails, the program exits via exit_with_error().
+** - The image is intended to be drawn on map tiles marked with '1'.
+**
+** Parameters:
+** - game: pointer to the game structure where the wall texture is stored.
+*/
 void	load_wall(t_game *game)
 {
 	int			img_width;
@@ -36,14 +40,15 @@ void	load_wall(t_game *game)
 }
 
 /*
- * Draws the wall image on every map tile containing '1'.
- * - Assumes tile size of 64 pixels.
- * - Iterates through all map rows (y) and columns (x).
- * - For each tile, checks if it equals '1' (wall).
- * - If yes, calculates its pixel position: (x * 64, y * 64).
- * - Calls mlx_put_image_to_window() to draw game->img_wall at that position.
- * - Repeats until all wall tiles are rendered.
- */
+** Renders the wall texture on each tile of the map that contains '1'.
+** - Iterates through all rows (y) and columns (x) of the map.
+** - For each tile that equals '1', draws the wall image at the
+**   corresponding screen coordinates: (x * 64, y * 64).
+** - Assumes each tile in the map corresponds to 64x64 pixels on screen.
+**
+** Parameters:
+** - game: pointer to the game structure containing map data and image handle.
+*/
 void	draw_walls(t_game *game)
 {
 	int	x;

@@ -13,14 +13,17 @@
 #include "so_long.h"
 
 /*
- * Loads the exit tile image from file into the game structure.
- * - The file path is defined by the macro EXIT_TEXTURE_PATH.
- * - Verifies that the file has a ".xpm" extension using has_xpm_extension().
- * - Uses mlx_xpm_file_to_image() to load the image into memory.
- *   → Requires width and height pointers even if not stored.
- * - If loading fails, calls exit_with_error() and terminates the program.
- * - The loaded image is stored in game->img_exit and used later in rendering.
- */
+** Loads the exit tile image into the game structure from a file path
+** defined by the EXIT_TEXTURE_PATH macro.
+** - Checks the file extension using has_xpm_extension().
+** - Uses mlx_xpm_file_to_image() to load the image into memory.
+** - Stores the resulting image pointer in `img_exit`.
+** - If the image fails to load, exits the program with an error message.
+** - Width and height are read into temporary variables but not used.
+**
+** Parameters:
+** - game: pointer to the game structure where the exit image will be stored.
+*/
 void	load_exit(t_game *game)
 {
 	int			img_width;
@@ -37,14 +40,18 @@ void	load_exit(t_game *game)
 }
 
 /*
- * Draws the exit image at the location of the 'E' tile in the map.
- * - Assumes a tile size of 64 pixels.
- * - Iterates over the 2D map array looking for the first occurrence of 'E'.
- * - When found, calculates pixel position by multiplying tile index by 64.
- * - Draws game->img_exit using mlx_put_image_to_window().
- * - Returns immediately after placing the first exit image.
- * - Assumes only one 'E' exists; multiple exits are not supported here.
- */
+** Renders the exit tile at the position of the first 'E' found in the map.
+** - Assumes each map tile is 64x64 pixels.
+** - Iterates through the map grid (2D array) searching for 'E'.
+** - When found, computes the pixel coordinates and places `img_exit`
+**   at that location using mlx_put_image_to_window().
+** - Exits immediately after rendering the first match.
+** - Assumes that only one exit tile ('E') exists in the map.
+**
+** Parameters:
+** - game: pointer to the game structure containing the map, window,
+**         and exit image handle.
+*/
 void	draw_exit(t_game *game)
 {
 	int	tile_size;

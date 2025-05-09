@@ -13,13 +13,18 @@
 #include "so_long.h"
 
 /*
- * Validates all characters in the map and counts special tiles.
- * - Accepts only: '0' (empty), '1' (wall), 'C' (collectible),
- *   'E' (exit), 'P' (player), and '\n' (newline).
- * - Increments counters for player, exit, and collectible tiles.
- * - Saves the player's starting coordinates to game->player_x/y.
- * - Exits immediately with an error if an invalid character is found.
- */
+** Scans the map to validate characters and count special tiles.
+** - Accepts only: '0', '1', 'C', 'E', 'P', and '\n'.
+** - Increments counters for each collectible, player, and exit.
+** - Records the player’s initial (x, y) position.
+** - Terminates if any invalid character is found in the map.
+**
+** Parameters:
+** - game: pointer to the game structure containing the map.
+** - p_count: pointer to player count (should become 1).
+** - e_count: pointer to exit count (should become 1).
+** - c_count: pointer to collectible count (should be ≥ 1).
+*/
 void	check_characters(t_game *game, int *p_count, int *e_count,
 							int *c_count)
 {
@@ -51,12 +56,15 @@ void	check_characters(t_game *game, int *p_count, int *e_count,
 }
 
 /*
- * Ensures the map is rectangular and completely enclosed by walls.
- * - Checks that all rows have the same length (rectangularity).
- * - Validates that the first and last columns contain only '1'.
- * - Validates that the first and last rows are filled with '1'.
- * - Exits with an error if any wall condition is violated.
- */
+** Validates that the map is rectangular and surrounded by wall tiles.
+** - Ensures each row has the same length.
+** - Checks that the first and last columns in each row are walls ('1').
+** - Verifies that the top and bottom rows are fully composed of walls.
+** - Exits the program if any of these checks fail.
+**
+** Parameters:
+** - game: pointer to the game structure containing the map.
+*/
 void	check_rectangular_and_walls(t_game *game)
 {
 	int	width;
@@ -83,15 +91,16 @@ void	check_rectangular_and_walls(t_game *game)
 }
 
 /*
- * Validates the structure and required content of the map.
- * - Calls check_characters() to ensure symbols are valid and counted.
- * - Confirms each row matches game->map_width to enforce rectangularity.
- * - Requires exactly 1 player ('P'), 1 exit ('E'),
- *   and at least 1 collectible ('C').
- * - Calls check_rectangular_and_walls() to ensure boundary walls.
- * - Stores the collectible count in game->collectibles for gameplay tracking.
- * - Exits if any condition is violated.
- */
+** Main function to validate the structure and contents of the map.
+** - Calls `check_characters()` to verify symbols and count entities.
+** - Confirms all rows match the expected map width.
+** - Ensures exactly one player and one exit exist, and at least one collectible.
+** - Checks that the map is fully enclosed by wall tiles.
+** - Stores the collectible count in `game->collectibles`.
+**
+** Parameters:
+** - game: pointer to the game structure containing the parsed map.
+*/
 void	validate_map(t_game *game)
 {
 	int	p_count;

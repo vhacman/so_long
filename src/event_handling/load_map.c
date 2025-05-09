@@ -13,15 +13,19 @@
 #include "so_long.h"
 
 /*
- * Counts the number of lines in the map file.
- * - Opens the file in read-only mode using open().
- * - Uses get_next_line() to read one line at a time.
- * - Increments a counter for each successfully read line.
- * - Frees each line to avoid memory leaks.
- * - Closes the file at the end.
- * - Returns the number of lines found (used as map height).
- * - If file cannot be opened, returns -1 to indicate error.
- */
+** Counts the number of lines in the given map file.
+** - Opens the file in read-only mode.
+** - Reads the file line by line using get_next_line().
+** - Frees each line after reading to avoid memory leaks.
+** - Closes the file and returns the number of lines read.
+** - Returns -1 if the file cannot be opened.
+**
+** Parameters:
+** - filename: path to the map file to be analyzed.
+**
+** Return:
+** - Total number of lines (rows) in the map, or -1 on error.
+*/
 static int	count_line(char *filename)
 {
 	int		fd;
@@ -44,17 +48,18 @@ static int	count_line(char *filename)
 }
 
 /*
- * Loads the map from file into game->map (2D array of strings).
- * - First, count_line() is called to get the number of rows.
- * - Allocates memory for the map array (height + 1 for NULL terminator).
- * - Opens the map file a second time in read-only mode.
- * - Uses get_next_line() to read each line into map[i].
- * - Each line is duplicated with ft_strdup() to manage memory safely.
- * - The line read is freed immediately after duplication.
- * - After all lines are read, the map array is NULL-terminated.
- * - game->map_width is set using the length of the first row.
- * - If file is invalid, unreadable, or empty, exits with error.
- */
+** Loads a map file into the game's internal map structure.
+** - Determines the map height using count_line().
+** - Allocates a NULL-terminated array of strings for the map.
+** - Opens the file and reads each line, duplicating it with ft_strdup().
+** - Each line is freed after duplication.
+** - The map is stored in game->map, with map height and width set.
+** - If the file is missing, unreadable, or empty, terminates with error.
+**
+** Parameters:
+** - game: pointer to the game structure where map data will be stored.
+** - filename: path to the map file to be loaded.
+*/
 void	load_map(t_game *game, char *filename)
 {
 	int		fd;
