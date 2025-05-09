@@ -24,7 +24,7 @@
 # =======================
 
 CC          = cc
-CFLAGS      = -g -Wall -Wextra -Werror \
+CFLAGS      = -Wall -Wextra -Werror \
               -Iinclude -Ilibft/includes -Iminilibx-linux -Iso_long_bonus/include
 
 # =======================

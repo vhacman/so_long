@@ -49,6 +49,8 @@ void	null_all_images(t_game *game)
  */
 void	free_static_images(t_game *game)
 {
+	if (game->mlx && game->img_blocked_exit)
+		mlx_destroy_image(game->mlx, game->img_blocked_exit);
 	if (game->mlx && game->img_intro)
 		mlx_destroy_image(game->mlx, game->img_intro);
 	if (game->mlx && game->img_player_right)
