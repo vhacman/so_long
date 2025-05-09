@@ -67,7 +67,7 @@ static int	handle_tile_effects(t_game *game, char tile)
 				game->blocked_msg_shown = 1;
 			}
 			return (0);
-		}	
+		}
 	}
 	return (1);
 }

@@ -28,13 +28,15 @@ void	load_player(t_game *game)
 	if (!has_xpm_extension("so_long_bonus/src/textures/player_right.xpm"))
 		exit_with_error("Player image (right) must be .xpm\n", game, 1);
 	game->img_player_right = mlx_xpm_file_to_image(game->mlx,
-			"so_long_bonus/src/textures/player_right.xpm", &img_width, &img_height);
+			"so_long_bonus/src/textures/player_right.xpm",
+			&img_width, &img_height);
 	if (!game->img_player_right)
 		exit_with_error("Failed to upload player image(right)\n", game, 1);
 	if (!has_xpm_extension("so_long_bonus/src/textures/player_left.xpm"))
 		exit_with_error("Player image (left) must be .xpm\n", game, 1);
 	game->img_player_left = mlx_xpm_file_to_image(game->mlx,
-			"so_long_bonus/src/textures/player_left.xpm", &img_width, &img_height);
+			"so_long_bonus/src/textures/player_left.xpm",
+			&img_width, &img_height);
 	if (!game->img_player_left)
 		exit_with_error("Failed to upload player image(left)\n", game, 1);
 	game->player_direction = 1;

@@ -61,7 +61,7 @@ void	load_blocked_exit_image(t_game *game)
 			"src/textures/banner.xpm",
 			&game->blocked_exit_width, &game->blocked_exit_height);
 	if (!game->img_blocked_exit)
-		exit_with_error("Error\nFailed to load blocked exit image\n", game, 1);
+		exit_with_error("Error\nFailed blocked exit image\n", game, 1);
 }
 
 /*
@@ -94,9 +94,13 @@ static void	load_collectible_frame(t_game *game, int index, const char *path)
  */
 void	load_collectible(t_game *game)
 {
-	load_collectible_frame(game, 0, "so_long_bonus/src/textures/collectible_0.xpm");
-	load_collectible_frame(game, 1, "so_long_bonus/src/textures/collectible_1.xpm");
-	load_collectible_frame(game, 2, "so_long_bonus/src/textures/collectible_2.xpm");
-	load_collectible_frame(game, 3, "so_long_bonus/src/textures/collectible_3.xpm");
+	load_collectible_frame(game, 0,
+		"so_long_bonus/src/textures/collectible_0.xpm");
+	load_collectible_frame(game, 1,
+		"so_long_bonus/src/textures/collectible_1.xpm");
+	load_collectible_frame(game, 2,
+		"so_long_bonus/src/textures/collectible_2.xpm");
+	load_collectible_frame(game, 3,
+		"so_long_bonus/src/textures/collectible_3.xpm");
 	game->collectible_frame = 0;
 }

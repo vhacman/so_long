@@ -46,7 +46,6 @@ void	load_player(t_game *game)
 	game->player_direction = 1;
 }
 
-
 /*
  * Draws the player sprite based on its current direction.
  * - Tile size is assumed to be 64x64 pixels.

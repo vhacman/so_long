@@ -86,7 +86,8 @@ void	check_rectangular_and_walls(t_game *game)
  * Validates the structure and required content of the map.
  * - Calls check_characters() to ensure symbols are valid and counted.
  * - Confirms each row matches game->map_width to enforce rectangularity.
- * - Requires exactly 1 player ('P'), 1 exit ('E'), and at least 1 collectible ('C').
+ * - Requires exactly 1 player ('P'), 1 exit ('E'),
+ *   and at least 1 collectible ('C').
  * - Calls check_rectangular_and_walls() to ensure boundary walls.
  * - Stores the collectible count in game->collectibles for gameplay tracking.
  * - Exits if any condition is violated.
