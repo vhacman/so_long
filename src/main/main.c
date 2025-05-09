@@ -39,7 +39,7 @@ static int	has_ber_extension(char *filename)
  * - Ensures all required graphics are ready before game starts.
  * - This happens after intro screen and before the main loop.
  */
-static void	load_assets(t_game *game)
+void	load_assets(t_game *game)
 {
 	load_background(game);
 	draw_background(game);
@@ -120,7 +120,10 @@ static void	check_args(int argc, char **argv)
  * - Registers event handlers:
  *   → handle_key for keyboard input (mlx_hook, code 2).
  *   → handle_destroy for window close (mlx_hook, code 17).
- *   → game_loop as loop hook (mlx_loop_hook).
+ *   → game_loop as lomlx_put_image_to_window(game.mlx, game.window,
+		game.img_intro,
+		(game.window_width - game.intro_width) / 2,
+		(game.window_height - game.intro_height) / 2);op hook (mlx_loop_hook).
  * - Starts the rendering and event loop with mlx_loop().
  * - Returns 0 at the end, though it never exits normally.
  */
@@ -134,16 +137,11 @@ int	main(int argc, char **argv)
 	check_args(argc, argv);
 	init_game(&game, argv[1], &win_width, &win_height);
 	load_intro_image(&game);
-	mlx_put_image_to_window(game.mlx, game.window,
-		game.img_intro,
-		(game.window_width - game.intro_width) / 2,
-		(game.window_height - game.intro_height) / 2);
-	mlx_do_sync(game.mlx);
-	sleep(2);
-	load_assets(&game);
+	game.intro_done = 0;
+	game.intro_frame = 0;
+	mlx_loop_hook(game.mlx, intro_loop, &game);
 	mlx_hook(game.window, 2, 1L << 0, handle_key, &game);
 	mlx_hook(game.window, 17, 0, handle_destroy, &game);
-	mlx_loop_hook(game.mlx, game_loop, &game);
 	mlx_loop(game.mlx);
 	return (0);
 }

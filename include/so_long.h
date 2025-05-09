@@ -45,6 +45,7 @@
 # include <unistd.h>
 # include "get_next_line.h"
 # include <sys/time.h>
+# include <math.h>
 
 /* ===================== Structures ===================== */
 
@@ -110,7 +111,12 @@ typedef struct s_game
 	int				blocked_exit_width;
 	int				blocked_exit_height;
 	int				blocked_msg_shown;
-	struct timeval	blocked_msg_time;
+	int				blocked_msg_counter;
+	int				win_screen_shown;
+	int				win_screen_counter;
+	int				blocked_msg_frames;
+	int				intro_done;
+	int				intro_frame;
 
 }	t_game;
 
@@ -225,5 +231,6 @@ void	null_all_images(t_game *game);
  */
 int		has_xpm_extension(const char *filename);
 void	render(t_game *game);
-
+int		intro_loop(t_game *game);
+void	load_assets(t_game *game);
 #endif

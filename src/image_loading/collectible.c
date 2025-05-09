@@ -15,35 +15,29 @@
 /*
  * Displays a temporary message when the player steps on the exit
  * without collecting all collectibles.
- * - Uses gettimeofday() to get the current time (now) with
- *   second and microsecond precision.
- * - Computes the elapsed time in milliseconds since the moment
- *   the player stepped on the exit tile and the warning was triggered.
- * - If less than 500ms have passed, it draws the image
- *   game->img_blocked_exit centered on the window.
- * - If more than 500ms passed, hides the message by setting
- *   game->blocked_msg_shown = 0.
- * - Prevents the message from staying on screen indefinitely.
+ * - Uses a frame-based counter instead of time.
+ * - If game->blocked_msg_counter < 30 (≈0.5 sec at 60 FPS),
+ *   the image is drawn centered in the window.
+ * - Otherwise, the message is hidden by setting
+ *   game->blocked_msg_shown = 0 and resetting the counter.
  */
 void	draw_blocked_exit_message(t_game *game)
 {
-	struct timeval	now;
-	long			elapsed;
-
 	if (!game->blocked_msg_shown)
 		return ;
-	gettimeofday(&now, NULL);
-	elapsed = (now.tv_sec - game->blocked_msg_time.tv_sec) * 1000
-		+ (now.tv_usec - game->blocked_msg_time.tv_usec) / 1000;
-	if (elapsed < 500)
+	if (game->blocked_msg_counter < 5)
 	{
 		mlx_put_image_to_window(game->mlx, game->window,
 			game->img_blocked_exit,
 			(game->window_width - game->blocked_exit_width) / 2,
 			(game->window_height - game->blocked_exit_height) / 2);
+		game->blocked_msg_counter++;
 	}
 	else
+	{
 		game->blocked_msg_shown = 0;
+		game->blocked_msg_counter = 0;
+	}
 }
 
 /*

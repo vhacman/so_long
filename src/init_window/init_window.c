@@ -12,6 +12,28 @@
 
 #include "so_long.h"
 
+int	intro_loop(t_game *game)
+{
+	if (!game->intro_done)
+	{
+		if (game->intro_frame == 0)
+		{
+			mlx_put_image_to_window(game->mlx, game->window,
+				game->img_intro,
+				(game->window_width - game->intro_width) / 2,
+				(game->window_height - game->intro_height) / 2);
+		}
+		game->intro_frame++;
+		if (game->intro_frame >= 10000)
+		{
+			game->intro_done = 1;
+			load_assets(game);
+			mlx_loop_hook(game->mlx, game_loop, game);
+		}
+	}
+	return (0);
+}
+
 /*
  * Initializes the MiniLibX graphical context and creates the game window.
  * - Calls mlx_init() to initialize MLX. Returns a pointer to the MLX instance.

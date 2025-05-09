@@ -27,19 +27,12 @@ static int	check_bounds(t_game *game, int new_x, int new_y)
 }
 
 /*
- * Handles interactions with the destination tile:
- * - '1': wall → movement is blocked, returns 0.
- * - 'C': collectible → decrements collectible counter.
- * - 'E': exit → if collectibles == 0, triggers win state:
- *     - Sets game->won = 1.
- *     - Calls gettimeofday(&game->win_time, NULL) to record the
- *       current system time in microseconds.
- *       This timestamp is used later to measure delay before quitting.
- *   → If collectibles remain, blocks movement and sets
- *     game->blocked_msg_shown = 1 to trigger a one-time message,
- *     recording the time in game->blocked_msg_time with gettimeofday().
- * - Returns 1 if movement is allowed, 0 otherwise.
- */
+** Handles effects of stepping on a tile:
+** - '1': wall → movement blocked.
+** - 'C': collectible → decrease count.
+** - 'E': exit → if all collectibles are collected, set win flag.
+**          → if not, show blocked message once and start a counter.
+*/
 static int	handle_tile_effects(t_game *game, char tile)
 {
 	if (tile == '1')
@@ -52,15 +45,16 @@ static int	handle_tile_effects(t_game *game, char tile)
 		{
 			ft_printf("YOU WON\n");
 			game->won = 1;
-			gettimeofday(&game->win_time, NULL);
+			game->win_screen_shown = 0;
+			game->win_screen_counter = 0;
 			return (1);
 		}
 		else
 		{
 			if (!game->blocked_msg_shown)
 			{
-				gettimeofday(&game->blocked_msg_time, NULL);
 				game->blocked_msg_shown = 1;
+				game->blocked_msg_counter = 0;
 			}
 			return (0);
 		}

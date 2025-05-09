@@ -13,19 +13,16 @@
 #include "so_long.h"
 
 /*
- * Determines if 2 full seconds have passed since the win time.
- * - Uses gettimeofday() to get current system time (now) with second
- *   and microsecond precision (struct timeval).
- * - Compares only the seconds field (tv_sec) of now and game->win_time.
- * - Returns 1 if the difference in seconds is >= 2, otherwise returns 0.
- * - This delay is used to keep the win image on screen before exiting.
+ * Determines if enough frames have passed since win.
+ * - Uses a static counter to delay for approx. duration.
+ * - Assumes ~60 FPS (approx. 120 frames ≈ 2 seconds).
  */
-static int	should_exit_after_delay(t_game *game)
+static int	should_exit_after_delay(void)
 {
-	struct timeval	now;
+	static int	frame_count = 0;
 
-	gettimeofday(&now, NULL);
-	return ((now.tv_sec - game->win_time.tv_sec) >= 2);
+	frame_count++;
+	return (frame_count >= 720);
 }
 
 /*
@@ -50,11 +47,11 @@ static int	handle_win(t_game *game, int *shown)
 	{
 		x = (game->window_width - game->img_win_width) / 2;
 		y = (game->window_height - game->img_win_height) / 2;
-		mlx_put_image_to_window(game->mlx, game->window, game->img_win, x, y);
-		gettimeofday(&game->win_time, NULL);
+		mlx_put_image_to_window(game->mlx, game->window,
+			game->img_win, x, y);
 		*shown = 1;
 	}
-	else if (should_exit_after_delay(game))
+	else if (should_exit_after_delay())
 	{
 		cleanup(game);
 		exit(0);
