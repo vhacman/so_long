@@ -56,16 +56,19 @@ void	load_assets(t_game *game)
 }
 
 /*
- * Sets up the game state based on the provided map name.
- * - Constructs full path by prefixing "src/maps/" to the name.
- * - Calls load_map() to read map lines from the file.
- * - Calls clean_map() to remove \n or \r from each line.
- * - Sets game->map_width using the length of the first row.
- * - Calls validate_map() to check symbols and walls.
- * - Calls validate_path() to check accessibility of exit.
- * - Sets window size using map dimensions × tile size (64).
- * - Calls init_window() to open the game window.
- */
+** init_game:
+** - Initializes the game using the provided map filename.
+** - Constructs full path by prepending "src/maps/" to map name.
+** - Loads map lines from file using load_map.
+** - Removes newline or carriage return chars using clean_map.
+** - Sets map_width based on the first line's length.
+** - Validates map symbols and wall boundaries.
+** - Verifies that all collectibles and exit are reachable.
+**   using validate_path.
+** - Exits with error if path is invalid.
+** - Calculates window size using map dimensions × tile size (64).
+** - Opens the graphical window using init_window.
+*/
 static void	init_game(t_game *game, char *map_name, int *win_width,
 						int *win_height)
 {

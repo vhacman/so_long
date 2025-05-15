@@ -22,7 +22,8 @@
 ** - If any image fails to load, terminates the program with an error.
 **
 ** Parameters:
-** - game: pointer to the game structure where image handles and state are stored.
+** - game: pointer to the game structure where image
+**   handles and state are stored.
 */
 void	load_player(t_game *game)
 {
