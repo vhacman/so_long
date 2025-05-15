@@ -13,11 +13,12 @@
 #include "so_long_bonus.h"
 
 /*
- * Checks if the map file has a ".ber" extension.
- * - Computes the string length.
- * - Compares the last 4 characters to ".ber".
- * - Returns 1 if match, 0 otherwise.
- */
+** has_ber_extension:
+** - Validates that the input filename ends with ".ber".
+** - Computes string length and compares last 4 characters.
+** - Returns 1 if extension is correct, 0 otherwise.
+** - Used to ensure only valid map files are accepted.
+*/
 static int	has_ber_extension(char *filename)
 {
 	int	len;
@@ -29,11 +30,14 @@ static int	has_ber_extension(char *filename)
 }
 
 /*
- * Loads all game assets and renders them.
- * - Loads and draws background, walls, player, enemy, and exit.
- * - Loads animated collectibles and win/loss images.
- * - Ensures that all visual elements are initialized before gameplay.
- */
+** load_assets:
+** - Loads and renders all visual elements required by the game.
+** - Calls loading and drawing functions in proper order:
+**     - Background, wall, player, enemy, exit, collectibles, win/loss banners.
+** - Loads animated collectibles and static assets.
+** - Ensures all resources are ready before gameplay begins.
+** - Must be called after the intro screen and before the main loop.
+*/
 static void	load_assets(t_game *game)
 {
 	load_background(game);
@@ -53,15 +57,16 @@ static void	load_assets(t_game *game)
 	load_blocked_exit_image(game);
 }
 
-/* 
- * Initializes the game map and window.
- * - Constructs the full map path and loads the map.
- * - Cleans map lines, validates characters and layout.
- * - Validates the path from player to exit.
- * - Calculates window dimensions based on tile size.
- * - Creates the window using init_window().
- * - Exits with error if any step fails.
- */
+/*
+** init_game:
+** - Prepares game state and window based on a given map name.
+** - Constructs the full path to the map by prepending "src/maps/".
+** - Loads and cleans the map from file.
+** - Validates content, structure, and path accessibility.
+** - Computes window dimensions based on map size (tile_size = 64).
+** - Initializes the window with those dimensions and a title.
+** - Exits the program on failure at any step.
+*/
 static void	init_game(t_game *game, char *map_name, int *win_width,
 						int *win_height)
 {
@@ -84,11 +89,12 @@ static void	init_game(t_game *game, char *map_name, int *win_width,
 }
 
 /*
- * Validates command-line arguments.
- * - Requires exactly one argument: the map filename.
- * - Checks that the filename ends in ".ber".
- * - Exits with an error message if validation fails.
- */
+** check_args:
+** - Validates command-line input before launching the game.
+** - Ensures exactly one argument is passed: the map filename.
+** - Verifies that the filename ends with ".ber".
+** - Prints an error and exits if checks fail.
+*/
 static void	check_args(int argc, char **argv)
 {
 	if (argc != 2)
@@ -104,13 +110,25 @@ static void	check_args(int argc, char **argv)
 }
 
 /*
- * Entry point of the program.
- * - Validates input arguments.
- * - Initializes the game map, assets, and window.
- * - Displays intro image for 2 seconds.
- * - Loads all game textures and sets up input and loop hooks.
- * - Starts the MLX event loop for real-time updates.
- */
+** main:
+** - Entry point of the program.
+**
+** Steps:
+** 1. Clears the t_game structure with ft_bzero to avoid garbage values.
+** 2. Validates CLI arguments using check_args.
+** 3. Loads and validates map, sets up game state and window via init_game.
+** 4. Loads and displays the intro image, centered in the window.
+** 5. Waits 2 seconds (sleep) before starting the game.
+** 6. Calls load_assets to load all textures and draw initial game state.
+** 7. Sets up event hooks:
+**     - Key input → handle_key
+**     - Window close → handle_destroy
+**     - Per-frame update → update_enemy
+** 8. Starts the MLX loop (mlx_loop), which runs the game continuously.
+**
+** Returns:
+** - Always returns 0 on normal termination.
+*/
 int	main(int argc, char **argv)
 {
 	t_game	game;

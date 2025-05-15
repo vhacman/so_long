@@ -16,7 +16,7 @@
 ** Loop hook function executed repeatedly during the intro phase.
 ** Displays the intro image on the first frame by centering it in the
 ** window. The image remains on screen while `intro_frame` is incremented
-** until it reaches 10000, simulating a delay.
+** until it reaches 10000 frames, simulating a delay.
 **
 ** Once the frame counter reaches the threshold, the intro ends by:
 ** - Setting `intro_done` to 1 to prevent repeated execution.
@@ -53,13 +53,16 @@ int	intro_loop(t_game *game)
 }
 
 /*
-** Initializes the MLX graphical context and creates a new game window.
-** If MLX initialization fails, prints an error and exits the program.
-** If window creation fails after MLX is initialized, prints another
-** error and exits. Upon success, stores window dimensions into the
-** `window_width` and `window_height` fields of the game structure.
-**
-** Parameters:
+** init_window:
+** - Initializes the MLX graphical system using mlx_init().
+** - If initialization fails, prints error and exits the program.
+** - Creates a new window with given width, height, and title.
+** - If window creation fails, prints error and exits the program.
+** - Stores width and height in game->window_width and game->window_height.
+** - Stores the returned MLX context and window handle in game->mlx and
+**   game->window for later use.
+**  
+**   Parameters:
 ** - game: pointer to the game structure to store MLX and window handles.
 ** - width: desired width of the window in pixels.
 ** - height: desired height of the window in pixels.

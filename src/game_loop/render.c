@@ -17,7 +17,7 @@
 ** to trigger program termination after a win.
 ** - Uses a static variable `frame_count` to persist across calls.
 ** - Increments the counter every frame.
-** - Returns 1 when 720 frames have passed (approx. 12 seconds at 60 FPS).
+** - Returns 1 when 100000 frames have passed
 **
 ** Return:
 ** - 1
@@ -27,23 +27,20 @@ static int	should_exit_after_delay(void)
 	static int	frame_count = 0;
 
 	frame_count++;
-	return (frame_count >= 720);
+	return (frame_count >= 100000);
 }
 
 /*
-** Displays the win screen and exits the program after a delay.
-** - If the win image has not yet been shown, it is rendered once at
-**   the center of the window and the `shown` flag is set.
-** - On subsequent calls, checks if the delay period has passed
-**   using `should_exit_after_delay()`.
-** - If yes, performs cleanup and terminates the program.
-**
-** Parameters:
-** - game: pointer to the game structure with rendering state.
-** - shown: pointer to static flag used to ensure image is shown only once.
-**
-** Return:
-** - Always returns 0 to comply with MLX hook signature.
+** handle_win:
+** - Displays the win screen and exits the game after a fixed delay.
+** - If the win image hasn't been displayed yet (*shown == 0):
+**     - Calculates center position of the window.
+**     - Draws the image once using mlx_put_image_to_window.
+**     - Sets *shown to 1 to prevent multiple renderings.
+** - If the image was already shown:
+**     - Calls should_exit_after_delay to wait 720 frames.
+**     - When the wait is complete, cleans up and exits the program.
+** - Always returns 0 to satisfy MLX loop hook requirements.
 */
 static int	handle_win(t_game *game, int *shown)
 {
@@ -87,13 +84,12 @@ int	game_loop(t_game *game)
 }
 
 /*
-** Draws static collectible items on all tiles marked with 'C'.
-** - Assumes tile size of 64 pixels.
-** - Iterates through the map grid and places `img_collectible`
-**   at the corresponding screen coordinates for each 'C' tile.
-**
-** Parameters:
-** - game: pointer to the game structure containing map and image data.
+** draw_collectibles:
+** - Iterates through the 2D map array.
+** - For each tile containing 'C' (collectible), draws the collectible
+**   image at the appropriate screen position (x * 64, y * 64).
+** - Assumes each tile corresponds to a 64x64 pixel block.
+** - Requires game->img_collectible to be preloaded.
 */
 void	draw_collectibles(t_game *game)
 {
@@ -118,14 +114,16 @@ void	draw_collectibles(t_game *game)
 }
 
 /*
-** Redraws the full game screen by calling all necessary render functions
-** in correct order to preserve visual layering.
-** - Background tiles are drawn first to cover the entire window.
-** - Walls, collectibles, player, exit, and blocked message are drawn
-**   in sequence to overlay foreground elements.
-**
-** Parameters:
-** - game: pointer to the game structure containing all game state and assets.
+** render:
+** - Redraws the full game window from scratch in correct visual order.
+** - Layering:
+**     1. Background (covers entire window).
+**     2. Walls (on top of background).
+**     3. Collectibles (on floor tiles).
+**     4. Player sprite.
+**     5. Exit tile.
+**     6. "Exit blocked" message (if active).
+** - Ensures visual coherence by respecting layer priority.
 */
 void	render(t_game *game)
 {

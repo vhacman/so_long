@@ -13,18 +13,15 @@
 #include "so_long.h"
 
 /*
-** Counts the number of lines in the given map file.
-** - Opens the file in read-only mode.
-** - Reads the file line by line using get_next_line().
-** - Frees each line after reading to avoid memory leaks.
-** - Closes the file and returns the number of lines read.
-** - Returns -1 if the file cannot be opened.
-**
-** Parameters:
-** - filename: path to the map file to be analyzed.
-**
-** Return:
-** - Total number of lines (rows) in the map, or -1 on error.
+** count_line:
+** - Opens the file at the given path in read-only mode.
+** - Reads the file line by line using get_next_line.
+** - For each line read:
+**     - Increments the line counter.
+**     - Frees the line to prevent memory leaks.
+** - After reading, closes the file and returns the total number of lines.
+** - If the file cannot be opened (open returns -1), returns -1.
+** - Used to determine the number of rows in the map (map height).
 */
 static int	count_line(char *filename)
 {
@@ -48,17 +45,21 @@ static int	count_line(char *filename)
 }
 
 /*
-** Loads a map file into the game's internal map structure.
-** - Determines the map height using count_line().
-** - Allocates a NULL-terminated array of strings for the map.
-** - Opens the file and reads each line, duplicating it with ft_strdup().
-** - Each line is freed after duplication.
-** - The map is stored in game->map, with map height and width set.
-** - If the file is missing, unreadable, or empty, terminates with error.
-**
-** Parameters:
-** - game: pointer to the game structure where map data will be stored.
-** - filename: path to the map file to be loaded.
+** load_map:
+** - Loads a textual map file into memory and stores it in game->map.
+** - First, uses count_line to determine how many lines are in the file
+**   and stores the value in game->map_height.
+** - Allocates memory for a NULL-terminated array of strings
+**   with ft_calloc (one extra for the NULL terminator).
+** - Opens the map file again in read-only mode.
+** - Reads each line with get_next_line, duplicates it with ft_strdup,
+**   and stores it in the map array. Frees the original line.
+** - After all lines are read:
+**     - Closes the file descriptor.
+**     - Sets game->map[i] = NULL to mark the end of the array.
+**     - Sets game->map_width using the length of the first row.
+** - If file reading fails at any point (file not found, empty, or malloc
+**   failure), exits the program with an appropriate error message.
 */
 void	load_map(t_game *game, char *filename)
 {

@@ -13,12 +13,15 @@
 #include "so_long_bonus.h"
 
 /*
- * Checks if the new player position is valid and safe.
- * - Verifies that new_x and new_y are within map boundaries.
- * - If the destination is the enemy’s location, sets game->lost to 1
- *   and records the current time using gettimeofday().
- * - Prevents out-of-bounds access or invalid enemy collisions.
- * - Returns 1 if the move is allowed, 0 otherwise.
+ ** check_bounds_and_enemy:
+ ** Checks if new_x and new_y are inside map limits.
+ ** If out of bounds, returns 0 (invalid move).
+ ** If coordinates match enemy's position:
+ **   - Prints "Game over."
+ **   - Sets game->lost to 1.
+ **   - Records current time in game->win_time.
+ **   - Returns 0 (invalid move).
+ ** Otherwise, returns 1 (valid move).
  */
 static int	check_bounds_and_enemy(t_game *game, int new_x, int new_y)
 {
@@ -37,13 +40,22 @@ static int	check_bounds_and_enemy(t_game *game, int new_x, int new_y)
 }
 
 /*
- * Processes the effects of stepping on a map tile.
- * - Blocks movement into walls ('1').
- * - If the tile is a collectible ('C'), decrements collectible count.
- * - If the tile is an exit ('E') and all collectibles are collected,
- *   sets game->won to 1 and records the win time.
- * - Does not block exit if it's the winning condition; otherwise, blocks.
- * - Returns 1 if the move can proceed, 0 if blocked.
+ ** handle_tile_effects:
+ ** Processes the effect of stepping on a tile.
+ ** If tile is '1' (wall), blocks move (returns 0).
+ ** If tile is 'C' (collectible), decreases collectible count.
+ ** If tile is 'E' (exit):
+ **   - If all collectibles collected:
+ **       - Prints "YOU WON"
+ **       - Sets game->won to 1
+ **       - Records current time in game->win_time
+ **       - Allows move (returns 1).
+ **   - Else:
+ **       - If blocked message not shown:
+ **           - Records current time for message timing.
+ **           - Sets blocked_msg_shown flag.
+ **       - Blocks move (returns 0).
+ ** Otherwise, returns 1 (move allowed).
  */
 static int	handle_tile_effects(t_game *game, char tile)
 {
@@ -73,11 +85,10 @@ static int	handle_tile_effects(t_game *game, char tile)
 }
 
 /*
- * Validates a move using positional and tile checks.
- * - Uses check_bounds_and_enemy() to verify coordinates are legal.
- * - Uses handle_tile_effects() to enforce map tile logic.
- * - Prevents invalid or game-ending moves from executing.
- * - Returns 1 if the move is valid; 0 otherwise.
+ ** is_valid_move:
+ ** Checks if new position is within bounds and not on enemy.
+ ** Checks tile effects using handle_tile_effects.
+ ** Returns 1 if move allowed, 0 if blocked by bounds or tile logic.
  */
 static int	is_valid_move(t_game *game, int new_x, int new_y)
 {
@@ -92,13 +103,13 @@ static int	is_valid_move(t_game *game, int new_x, int new_y)
 }
 
 /*
- * Updates the player’s position on the map and modifies game state.
- * - dx and dy are relative displacements on the x and y axes.
- *   Example: (dx = 1, dy = 0) moves the player one step right.
- * - Updates player direction: 1 for right, -1 for left.
- * - Replaces previous tile with '0' unless it was an exit ('E').
- * - Updates new tile with 'P' unless it’s an exit.
- * - Increments move counter and prints total moves to stdout.
+ ** update_player_position:
+ ** Updates player's x and y by dx and dy.
+ ** Updates player direction: 1 if moving right, -1 if left.
+ ** Clears old position tile unless it is an exit.
+ ** Sets new position tile to 'P' unless it is an exit.
+ ** Increments move count.
+ ** Prints current move count to stdout.
  */
 static void	update_player_position(t_game *game, int dx, int dy)
 {
@@ -122,14 +133,18 @@ static void	update_player_position(t_game *game, int dx, int dy)
 }
 
 /*
- * Controls player movement based on directional input.
- * - dx and dy define the intended move direction.
- *   dx = ±1: horizontal movement; dy = ±1: vertical movement.
- *   (dx = 0, dy = -1) → up; (dx = 0, dy = 1) → down
- *   (dx = -1, dy = 0) → left; (dx = 1, dy = 0) → right
- * - Validates the move and updates player position if allowed.
- * - Checks if player reached exit with no collectibles to win.
- * - Updates enemy position and re-renders the game view.
+ ** move_player:
+ ** Computes new target position from current pos + dx/dy.
+ ** Calls is_valid_move to check legality of move.
+ ** If invalid, calls render() without moving.
+ ** If valid:
+ **   - Calls update_player_position.
+ **   - Checks if player is on exit with no collectibles:
+ **       - Prints "YOU WON"
+ **       - Sets game->won to 1
+ **       - Records current time in game->win_time.
+ **   - Calls update_enemy to move enemy after player.
+ **   - Calls render() to update display.
  */
 void	move_player(t_game *game, int dx, int dy)
 {

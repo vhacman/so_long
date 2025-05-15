@@ -13,14 +13,16 @@
 #include "so_long_bonus.h"
 
 /*
- * Displays the current number of player moves on screen.
- * - Converts game->moves (int) to a string using ft_itoa().
- * - Creates a new string by concatenating "Moves: " with the move count.
- * - Draws the resulting message three times with slight pixel offsets
- *   to create a shadow or bold effect for better readability.
- * - Uses mlx_string_put() to draw directly onto the game window.
- * - Frees both allocated strings after drawing to avoid memory leaks.
- */
+** render_moves:
+** - Converts game->moves (int) to a string using ft_itoa().
+** - Creates a new string by prefixing "Moves: " to the move count.
+** - Draws the move count text on the window three times:
+**   at (10,10), (11,10), and (10,11) pixels to produce a shadow effect,
+**   improving readability against varied backgrounds.
+** - Uses mlx_string_put() to render text directly on the MLX window.
+** - Frees both temporary strings (number and message) after drawing
+**   to prevent memory leaks.
+*/
 static void	render_moves(t_game *game)
 {
 	char	*str;
@@ -36,13 +38,20 @@ static void	render_moves(t_game *game)
 }
 
 /*
- * Draws the full game frame in the correct layer order.
- * - Begins with the background, followed by static elements like walls.
- * - Calls animate_collectibles() to render collectibles with animation.
- * - Then draws player, enemy, and exit so they appear above the base tiles.
- * - Finally, calls render_moves() to overlay the move count on top.
- * - This function is called after every state update to refresh display.
- */
+** render:
+** - Draws the complete game frame each time it is called.
+** - First draws the static background to cover the entire window.
+** - Draws all wall tiles to create obstacles and borders.
+** - Renders animated collectibles using animate_collectibles(),
+**   updating their frame and position.
+** - Draws the player sprite at its current coordinates.
+** - Draws the enemy sprite at its current coordinates.
+** - Draws the exit tile where the player must reach to win.
+** - Overlays the current move count text by calling render_moves().
+** - Displays the "exit blocked" popup message if active.
+** - Ensures correct layering so that characters appear above background tiles.
+** - Should be called after every game state change to update visuals.
+*/
 void	render(t_game *game)
 {
 	draw_background(game);

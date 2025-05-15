@@ -13,18 +13,23 @@
 #include "so_long_bonus.h"
 
 /*
- * Displays a temporary message when the player steps on the exit
- * without collecting all collectibles.
- * - Uses gettimeofday() to get the current time (now) with
- *   second and microsecond precision.
- * - Computes the elapsed time in milliseconds since the moment
- *   the player stepped on the exit tile and the warning was triggered.
- * - If less than 500ms have passed, it draws the image
- *   game->img_blocked_exit centered on the window.
- * - If more than 500ms passed, hides the message by setting
- *   game->blocked_msg_shown = 0.
- * - Prevents the message from staying on screen indefinitely.
- */
+** draw_blocked_exit_message:
+** - Temporarily displays a warning image when the player tries to exit
+**   without collecting all required items.
+**
+** Steps:
+** 1. If game->blocked_msg_shown is false, return immediately.
+** 2. Gets the current time using gettimeofday().
+** 3. Computes the time elapsed since the warning was triggered
+**    by comparing it to game->blocked_msg_time.
+** 4. If less than 500 milliseconds passed:
+**      - Draws game->img_blocked_exit centered in the window.
+** 5. If 500ms or more passed:
+**      - Disables the warning by setting game->blocked_msg_shown = 0.
+**
+** Purpose:
+** - Prevents the warning popup from staying visible indefinitely.
+*/
 void	draw_blocked_exit_message(t_game *game)
 {
 	struct timeval	now;
@@ -47,14 +52,20 @@ void	draw_blocked_exit_message(t_game *game)
 }
 
 /*
- * Loads the image used for the "blocked exit" popup.
- * - Loads the XPM file: "src/textures/banner.xpm".
- * - Stores image pointer in game->img_blocked_exit.
- * - Stores width and height of the image in
- *   game->blocked_exit_width and game->blocked_exit_height.
- * - Exits with an error if the image fails to load.
- * - This image is used in draw_blocked_exit_message().
- */
+** load_blocked_exit_image:
+** - Loads the popup image shown when the player steps on the exit
+**   without having collected all collectibles.
+**
+** Steps:
+** 1. Uses mlx_xpm_file_to_image to load the image from:
+**      "src/textures/banner.xpm".
+** 2. Stores the image pointer in game->img_blocked_exit.
+** 3. Stores the image dimensions in game->blocked_exit_width and
+**    game->blocked_exit_height.
+** 4. If loading fails, exits the game with an error message.
+**
+** Required before calling draw_blocked_exit_message().
+*/
 void	load_blocked_exit_image(t_game *game)
 {
 	game->img_blocked_exit = mlx_xpm_file_to_image(game->mlx,
@@ -65,14 +76,21 @@ void	load_blocked_exit_image(t_game *game)
 }
 
 /*
- * Loads a single collectible frame image from file.
- * - Validates file extension is .xpm using has_xpm_extension().
- * - Loads the image using mlx_xpm_file_to_image().
- * - Stores the image in game->img_collectibles at the given index.
- * - Exits the program with an error if the extension is wrong or
- *   if loading fails (e.g., file missing or corrupted).
- * - img_width and img_height are required by MLX but unused.
- */
+** load_collectible_frame:
+** - Loads a single frame of the collectible animation.
+**
+** Parameters:
+** - index: target index in game->img_collectibles[].
+** - path: file path to the XPM image.
+**
+** Steps:
+** 1. Verifies that the file path ends with ".xpm".
+** 2. Loads the image using mlx_xpm_file_to_image and stores it
+**    in game->img_collectibles[index].
+** 3. If loading fails, exits with an error.
+**
+** Used internally by load_collectible().
+*/
 static void	load_collectible_frame(t_game *game, int index, const char *path)
 {
 	int	img_width;
@@ -87,11 +105,17 @@ static void	load_collectible_frame(t_game *game, int index, const char *path)
 }
 
 /*
- * Loads all four animation frames for the collectible item.
- * - Calls load_collectible_frame() with fixed paths for each frame.
- * - Initializes game->collectible_frame to 0 (starting frame).
- * - Ensures all necessary frames are available before animation starts.
- */
+** load_collectible:
+** - Loads all 4 frames of the collectible's animation.
+**
+** Steps:
+** 1. Calls load_collectible_frame() four times with frame paths:
+**    - collectible_0.xpm → collectible_3.xpm.
+** 2. Initializes game->collectible_frame to 0, the starting frame.
+**
+** Purpose:
+** - Prepares animated collectible assets before the game starts.
+*/
 void	load_collectible(t_game *game)
 {
 	load_collectible_frame(game, 0,

@@ -13,13 +13,11 @@
 #include "so_long_bonus.h"
 
 /*
- * Displays the appropriate end screen image (win or loss).
- * - Uses a static reference timestamp game->win_time.
- * - Computes elapsed time in milliseconds since game ended.
- * - Calculates screen center using image and window dimensions.
- * - Draws either win or loss image using mlx_put_image_to_window().
- * - After 2000ms, calls handle_destroy() to exit the game cleanly.
- */
+** Draws the win or loss screen centered in the window.
+** Calculates milliseconds elapsed since game ended.
+** Shows win image if player won, loss image if lost.
+** After 2000 ms, calls handle_destroy() to exit cleanly.
+*/
 static void	draw_end_screen(t_game *game, int won, struct timeval current_time)
 {
 	long	elapsed_ms;
@@ -47,13 +45,29 @@ static void	draw_end_screen(t_game *game, int won, struct timeval current_time)
 }
 
 /*
- * Moves the enemy along a predefined path stored in enemy_path.
- * - Saves previous x-position to determine movement direction.
- * - If path index is valid, updates enemy position and increments index.
- * - If path is completed, resets index to 0 to loop animation.
- * - Sets game->enemy_dir based on horizontal movement direction:
- *   1 if moving right, -1 if moving left.
- */
+** The function move_enemy updates the enemy’s position along a 
+** predefined path step by step. It works as follows:
+** It saves the enemy’s current horizontal position (prev_x).
+**
+** It checks if the enemy still has steps left in its path 
+** (enemy_path_index < enemy_path_len).
+** If yes, it updates the enemy’s coordinates (enemy_x, enemy_y) 
+** to the next point on the path.
+**
+** Then it increments the path index to move to 
+** the next step for the next call.
+**
+** If the enemy has reached the end of the path, 
+** it resets the path index to 0, so the enemy repeats the path from the start.
+** After moving, it compares the new horizontal 
+** position (enemy_x) to the old one (prev_x):
+**
+** If enemy_x is greater than prev_x, the enemy moved right,
+** so enemy_dir is set to 1.
+**
+** If enemy_x is less than prev_x, the enemy moved left, 
+** so enemy_dir is set to -1.
+*/
 static void	move_enemy(t_game *game)
 {
 	int	prev_x;
@@ -74,12 +88,16 @@ static void	move_enemy(t_game *game)
 }
 
 /*
- * Checks for collision between enemy and player.
- * - Compares enemy and player coordinates.
- * - If matched, sets game->lost = 1 and records win_time.
- * - Prints "Game over." and returns 1 to indicate collision.
- * - Returns 0 if no collision occurred.
- */
+** Checks if the enemy and player occupy the same position (collision).
+** - Compares enemy_x and enemy_y with player_x and player_y coordinates.
+** - If they match, the player has been caught by the enemy.
+** - On collision:
+**   - Prints "Game over." to the console.
+**   - Sets game->lost to 1 to indicate the player lost.
+**   - Records the current time in game->win_time to manage game end.
+**   - Returns 1 to signal a collision occurred.
+** - Returns 0 if no collision is detected.
+*/
 static int	handle_collision(t_game *game)
 {
 	if (game->enemy_x == game->player_x && game->enemy_y == game->player_y)
@@ -93,15 +111,17 @@ static int	handle_collision(t_game *game)
 }
 
 /*
- * Periodic enemy update routine for MLX loop hook.
- * - Casts param to t_game pointer to access game state.
- * - If game is over (won/lost), calls draw_end_screen().
- * - Measures elapsed time since last enemy move using static timeval.
- * - Skips update if < 300ms elapsed to regulate movement speed.
- * - Otherwise, updates enemy position, re-renders screen,
- *   and checks for player collision.
- * - Always returns 0 as required by MLX loop.
- */
+** Periodic function called by the MLX loop to update the enemy.
+** - Casts the generic pointer to t_game* to access game state.
+** - Retrieves the current time using gettimeofday().
+** - If the game is won or lost, draws the end screen and stops updating.
+** - Calculates elapsed time in milliseconds since the enemy last moved.
+** - If less than 300 ms have passed, skips the update to slow movement.
+** - Otherwise, moves the enemy along its path.
+** - Calls render() to redraw the screen with updated positions.
+** - Checks for collision between enemy and player.
+** - Always returns 0 as required by MLX hook functions.
+*/
 int	update_enemy(void *param)
 {
 	t_game					*game;

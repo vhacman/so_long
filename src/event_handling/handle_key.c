@@ -13,18 +13,16 @@
 #include "so_long.h"
 
 /*
-** Handles keypress events during gameplay.
-** - Supports movement keys and ESC for exiting.
-** - Directional keys (WASD or arrows) trigger player movement.
-** - ESC key triggers cleanup and terminates the game.
-** - Each movement call internally handles rendering and state updates.
-**
-** Parameters:
-** - key: keycode of the pressed key.
-** - game: pointer to the game structure containing state and context.
-**
-** Return:
-** - Always returns 0 to conform to MLX hook function requirements.
+** handle_key:
+** - Responds to keyboard input during active gameplay.
+** - If the ESC key is pressed (KEY_ESC), triggers cleanup and exits the game.
+** - If movement keys are pressed:
+**     - W or UP    → move up    → move_player(game, 0, -1)
+**     - S or DOWN  → move down  → move_player(game, 0, 1)
+**     - A or LEFT  → move left  → move_player(game, -1, 0)
+**     - D or RIGHT → move right → move_player(game, 1, 0)
+** - move_player handles validation, movement logic, and rendering.
+** - Always returns 0 as required by MLX key hook callback signature.
 */
 int	handle_key(int key, t_game *game)
 {

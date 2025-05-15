@@ -12,11 +12,17 @@
 
 #include "so_long_bonus.h"
 
-/* 
- * Frees the memory used by a map copy.
- * - Iterates over all rows and frees each string.
- * - Frees the map_copy array itself.
- */
+/*
+** free_map_copy:
+** - Frees all memory allocated for a duplicated map.
+** - Iterates through each row (string) in map_copy and frees it.
+** - After all rows are freed, frees the map_copy pointer itself.
+** - Used in validate_path to clean up after flood fill simulation.
+**
+** Parameters:
+** - map_copy: 2D array of strings representing the duplicated map.
+** - map_height: number of rows in the map.
+*/
 void	free_map_copy(char **map_copy, int map_height)
 {
 	int	i;
@@ -30,12 +36,19 @@ void	free_map_copy(char **map_copy, int map_height)
 	free(map_copy);
 }
 
-/* 
- * Checks if any unreachable collectibles ('C') or exit ('E') remain.
- * - Iterates through the map copy.
- * - Returns 1 if all 'C' and 'E' have been visited (i.e., replaced).
- * - Returns 0 if any 'C' or 'E' remains.
- */
+/*
+** check_remaining_elements:
+** - Scans the flood-filled map copy to detect unreachable objectives.
+** - Iterates through each tile of the map.
+** - If any collectible ('C') or exit ('E') is found, sets valid = 0.
+**   → This means the tile was not reached by flood fill.
+** - Returns 1 if all collectibles and the exit are reachable.
+** - Returns 0 if any of them remain unreachable.
+**
+** Parameters:
+** - map_copy: pointer to the flood-filled map.
+** - map_height: number of rows in the map.
+*/
 int	check_remaining_elements(char **map_copy, int map_height)
 {
 	int	i;

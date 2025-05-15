@@ -13,18 +13,14 @@
 #include "so_long.h"
 
 /*
-** Loads the intro image from an XPM file and stores it in the 
-** `img_intro` field of the game structure. The image is loaded from 
-** the path "src/textures/intro.xpm" using MLX.
-** Also retrieves and stores the image dimensions in `intro_width` and 
-** `intro_height`, used for centering during rendering.
-**
-** If the image fails to load, the program exits via `exit_with_error`.
-** Sets `intro_shown` to 0 to indicate that the intro has not been displayed yet.
-**
-** Parameters:
-** - game: pointer to the game structure where the image and dimensions
-**         will be stored, and where error handling context resides.
+** load_intro_image:
+** - Loads the intro screen image from "src/textures/intro.xpm" using
+**   mlx_xpm_file_to_image.
+** - Stores the image pointer in game->img_intro.
+** - Stores the image dimensions in game->intro_width and game->intro_height.
+** - These values are used later to center the intro image on screen.
+** - If loading fails, exits the program with an error message.
+** - Initializes game->intro_shown to 0 to track if the intro has been displayed.
 */
 void	load_intro_image(t_game *game)
 {
@@ -37,14 +33,15 @@ void	load_intro_image(t_game *game)
 }
 
 /*
- * Loads the image that is displayed when the player wins.
- * - Path: "src/textures/won.xpm".
- * - Uses mlx_xpm_file_to_image() to load the image and stores the result
- *   in game->img_win.
- * - Stores width and height in game->img_win_width and game->img_win_height.
- * - If the image fails to load, exits with an error message.
- * - This image is used in the game loop to indicate victory.
- */
+** load_win_image:
+** - Loads the win screen image from "src/textures/won.xpm" using
+**   mlx_xpm_file_to_image.
+** - Stores the resulting image pointer in game->img_win.
+** - Saves image dimensions in game->img_win_width and game->img_win_height.
+** - These values are required for rendering the win screen correctly.
+** - If loading fails, exits the program with an error message.
+** - The image is used to indicate that the player has won the game.
+*/
 void	load_win_image(t_game *game)
 {
 	game->img_win_width = 0;

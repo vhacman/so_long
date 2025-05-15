@@ -61,15 +61,16 @@ void	load_background(t_game *game)
 }
 
 /*
-** Tiles the background image across the entire game window.
-** - Calculates the number of columns and rows needed based on a fixed
-**   tile size of 64 pixels and the window dimensions.
-** - Uses nested loops to draw the image at each tile position.
-** - Ensures full window coverage with no empty space.
-**
-** Parameters:
-** - game: pointer to the game structure containing rendering context
-**         and the loaded background image.
+** draw_background:
+** - Fills the entire game window by tiling the background image.
+** - Assumes each background tile is 64x64 pixels.
+** - Calculates how many rows and columns fit in the window based on its size.
+** - Uses nested loops:
+**     - Outer loop iterates over rows (vertical).
+**     - Inner loop iterates over columns (horizontal).
+** - Draws the background image at each tile position using:
+**     mlx_put_image_to_window(..., row_index * 64, col_index * 64).
+** - Ensures there are no gaps in the background.
 */
 void	draw_background(t_game *game)
 {

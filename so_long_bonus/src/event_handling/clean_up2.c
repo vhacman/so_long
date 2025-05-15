@@ -13,11 +13,11 @@
 #include "so_long_bonus.h"
 
 /*
- * Sets all image pointers in the game struct to NULL.
- * - Prevents access to freed memory by clearing all image pointers.
- * - Ensures the program does not attempt to destroy already-freed
- *   resources during future cleanups.
- * - Resets both static and animated image pointers to a safe state.
+ ** null_all_images:
+ ** Sets all image pointers in the game struct to NULL.
+ ** Prevents access to freed memory by clearing image pointers.
+ ** Avoids destroying freed resources in later cleanup calls.
+ ** Resets static and animated image pointers to a safe state.
  */
 void	null_all_images(t_game *game)
 {
@@ -41,11 +41,11 @@ void	null_all_images(t_game *game)
 }
 
 /*
- * Frees all static image resources used in the game.
- * - Releases memory allocated by mlx_new_image to prevent memory leaks.
- * - Checks that both the MLX context and image pointer are valid before
- *   calling mlx_destroy_image to avoid segmentation faults.
- * - Static images include environment and UI assets that don't animate.
+ ** free_static_images:
+ ** Frees all static (non-animated) image resources.
+ ** Checks mlx context and image pointer before destroying.
+ ** Prevents segmentation faults by validating pointers.
+ ** Frees images such as backgrounds, walls, player, enemy, UI.
  */
 void	free_static_images(t_game *game)
 {
@@ -74,10 +74,11 @@ void	free_static_images(t_game *game)
 }
 
 /*
- * Frees all animated image resources related to collectibles.
- * - Avoids memory leaks by releasing dynamically created image frames.
- * - Iterates through the array to handle all animation frames.
- * - Validates both MLX context and image pointer before destroying.
+ ** free_animated_images:
+ ** Frees all animated image resources (collectible frames).
+ ** Iterates over animation frame array, freeing each image.
+ ** Validates mlx context and image pointers before freeing.
+ ** Ensures no leaks for dynamically loaded animation frames.
  */
 void	free_animated_images(t_game *game)
 {

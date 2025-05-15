@@ -12,12 +12,23 @@
 
 #include "so_long_bonus.h"
 
-/* 
- * Performs recursive flood fill starting from (row, col).
- * - Replaces walkable tiles with 'F' to mark them as visited.
- * - Stops if out of bounds, hits a wall ('1'), or already visited ('F').
- * - Recursively visits all 4 directions.
- */
+/*
+** flood_fill:
+** - Recursively explores the map starting from (row, col).
+** - Marks each reachable tile as visited by overwriting with 'F'.
+** - Stops recursion if:
+**     - Coordinates are out of bounds.
+**     - The tile is a wall ('1') or already visited ('F').
+** - Propagates in all four cardinal directions (up, down, left, right).
+** - Used to simulate all possible player movements without modifying the
+**   original map.
+**
+** Parameters:
+** - map: duplicate of the game map used for flood fill traversal.
+** - row: current y-coordinate of the traversal.
+** - col: current x-coordinate of the traversal.
+** - height: total number of rows in the map.
+*/
 static void	flood_fill(char **map, int row, int col, int height)
 {
 	if (row < 0 || col < 0 || row >= height || col >= (int)ft_strlen(map[0]))
@@ -31,14 +42,23 @@ static void	flood_fill(char **map, int row, int col, int height)
 	flood_fill(map, row, col - 1, height);
 }
 
-/* 
- * Validates if all collectibles and the exit are reachable from player.
- * - Duplicates the map to preserve original state.
- * - Runs flood_fill from the player's starting position.
- * - Uses check_remaining_elements() to detect unreachable 'C' or 'E'.
- * - Frees the copied map.
- * - Returns 1 if all targets are reachable, 0 otherwise.
- */
+/*
+** validate_path:
+** - Checks if all collectibles and the exit are reachable from the
+**   player's starting position using flood fill.
+**
+** Steps:
+** 1. Duplicates the map using ft_strdup to avoid altering the original.
+** 2. Runs flood_fill from the player's initial position to mark reachable tiles.
+** 3. Calls check_remaining_elements to verify no 'C' or 'E' remain.
+**     - If any are left unvisited, it means they are unreachable.
+** 4. Frees the duplicated map via free_map_copy.
+** 5. Returns:
+**     - 1 if all required tiles are reachable.
+**     - 0 if any 'C' or 'E' is unreachable.
+**
+** If allocation fails at any point, exits the program with an error.
+*/
 int	validate_path(t_game *game)
 {
 	char	**map_copy;

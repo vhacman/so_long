@@ -13,12 +13,12 @@
 #include "so_long_bonus.h"
 
 /*
- * Scans the entire map to check for valid characters.
- * - Accepts only allowed symbols: '0' (empty), '1' (wall), 'C' 
- *   (collectible), 'E' (exit), 'P' (player), 'X' (enemy), '\n'.
- * - Increments counters for player (P), exit (E), and collectibles (C).
- * - Records the initial player position in game->player_x/y.
- * - Exits immediately with an error if any invalid character is found.
+ ** check_characters:
+ ** Scans entire map for allowed characters only.
+ ** Allowed: '0', '1', 'C', 'E', 'P', 'X', '\n'.
+ ** Counts number of players (P), exits (E), collectibles (C).
+ ** Stores player initial coordinates in game->player_x/y.
+ ** Exits with error if any invalid character found.
  */
 void	check_characters(t_game *game, int *p_count, int *e_count,
 							int *c_count)
@@ -51,11 +51,11 @@ void	check_characters(t_game *game, int *p_count, int *e_count,
 }
 
 /*
- * Verifies that the map is rectangular and enclosed by walls.
- * - Ensures all rows have the same width as the first one.
- * - First and last character of every row must be wall ('1').
- * - First and last rows must be composed entirely of wall ('1').
- * - Exits with an error if map is not rectangular or not enclosed.
+ ** check_rectangular_and_walls:
+ ** Ensures map is rectangular: all rows same width.
+ ** Checks first and last character of each row are '1' (walls).
+ ** Checks top and bottom rows are fully '1'.
+ ** Exits with error if shape or enclosure invalid.
  */
 void	check_rectangular_and_walls(t_game *game)
 {
@@ -83,14 +83,13 @@ void	check_rectangular_and_walls(t_game *game)
 }
 
 /*
- * Validates the structure and content of the entire map.
- * - Calls check_characters() to validate symbols and count required
- *   elements.
- * - Ensures exactly one player, one exit, and at least one collectible.
- * - Verifies rectangular shape by checking all row lengths.
- * - Calls check_rectangular_and_walls() to ensure map enclosure.
- * - Sets total collectible count in game->collectibles.
- * - Exits with specific error if any condition fails.
+ ** validate_map:
+ ** Calls check_characters to validate symbols and count elements.
+ ** Confirms exactly one player and exit, at least one collectible.
+ ** Validates all rows match expected width (rectangular).
+ ** Calls check_rectangular_and_walls to verify map enclosure.
+ ** Stores total collectibles count in game->collectibles.
+ ** Exits with specific errors on any validation failure.
  */
 void	validate_map(t_game *game)
 {

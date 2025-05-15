@@ -13,16 +13,19 @@
 #include "so_long.h"
 
 /*
-** Displays the "exit blocked" message at the center of the window.
-** Only renders the image if `blocked_msg_shown` is non-zero.
-** The image is shown for a limited number of frames, controlled by
-** `blocked_msg_counter`, which is incremented on each call until it 
-** reaches 0.5. After that, both `blocked_msg_shown` and the counter 
-** are reset to disable the message display.
-**
-** Parameters:
-** - game: a pointer to the game structure containing rendering context,
-**         message flags, image pointer, and window dimensions.
+** draw_blocked_exit_message:
+** - Displays a centered popup image that warns the player the exit
+**   cannot be used yet (some collectibles are still missing).
+** - The image is shown only if game->blocked_msg_shown is set to 1.
+** - It is drawn at the center of the screen using window and image sizes.
+** - A counter (game->blocked_msg_counter) keeps track of how long
+**   the message has been displayed.
+** - While the counter is less than 0.5, the image is rendered and the
+**   counter is incremented.
+** - Once the counter reaches or exceeds 0.5:
+**     - blocked_msg_shown is reset to 0 to stop displaying the image.
+**     - blocked_msg_counter is reset to 0 to prepare for next trigger.
+** - This mechanism ensures the message appears briefly, then disappears.
 */
 void	draw_blocked_exit_message(t_game *game)
 {

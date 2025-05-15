@@ -13,13 +13,19 @@
 #include "so_long_bonus.h"
 
 /*
- * Loads the exit tile image from an XPM file.
- * - The path is defined by EXIT_TEXTURE_PATH.
- * - Verifies the file has a .xpm extension.
- * - Loads the image into game->img_exit using mlx_xpm_file_to_image().
- * - Image dimensions are required by MLX but not stored.
- * - Exits with an error message if the image fails to load.
- */
+** load_exit:
+** - Loads the exit tile image from the path specified by EXIT_TEXTURE_PATH.
+**
+** Steps:
+** 1. Checks that the file extension is ".xpm" using has_xpm_extension.
+** 2. Loads the image using mlx_xpm_file_to_image:
+**     - Stores the image pointer in game->img_exit.
+**     - Retrieves image dimensions but does not store them.
+** 3. If the image fails to load (returns NULL), exits with an error.
+**
+** Purpose:
+** - Prepares the static graphic used to represent the level exit ('E') tile.
+*/
 void	load_exit(t_game *game)
 {
 	int			img_width;
@@ -36,12 +42,20 @@ void	load_exit(t_game *game)
 }
 
 /*
- * Renders the exit image at its location on the map.
- * - Uses a fixed tile size of 64 pixels for screen positioning.
- * - Iterates through the map to find the tile labeled 'E'.
- * - Draws game->img_exit at the corresponding screen coordinates.
- * - Assumes there is only one exit and exits the loop after drawing.
- */
+** draw_exit:
+** - Draws the exit tile on the screen at the position marked 'E' in the map.
+**
+** Steps:
+** 1. Iterates over the entire map grid (rows and columns).
+** 2. When the 'E' tile is found:
+**     - Converts its grid coordinates to pixel coordinates (×64).
+**     - Draws the exit image using mlx_put_image_to_window.
+**     - Exits immediately after drawing the first exit tile.
+**
+** Assumptions:
+** - There is exactly one 'E' tile in the map (enforced during validation).
+** - game->img_exit has been successfully loaded before this call.
+*/
 void	draw_exit(t_game *game)
 {
 	int	tile_size;

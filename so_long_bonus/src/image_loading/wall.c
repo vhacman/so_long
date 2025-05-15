@@ -13,13 +13,15 @@
 #include "so_long_bonus.h"
 
 /*
- * Loads the wall image from an XPM file.
- * - File path is "src/textures/wall.xpm".
- * - Validates the extension to ensure it is a .xpm file.
- * - Uses mlx_xpm_file_to_image() to load the image.
- * - Stores the result in game->img_wall.
- * - Exits with an error message if loading fails.
- */
+** load_wall:
+** - Loads the wall tile texture used to represent impassable areas.
+** - Validates that the file path has a ".xpm" extension using has_xpm_extension.
+** - Loads the image from "so_long_bonus/src/textures/wall.xpm" using
+**   mlx_xpm_file_to_image, which returns a pointer to the loaded image.
+** - Stores the resulting image in game->img_wall.
+** - Retrieves the image’s width and height but does not store them.
+** - If the image fails to load (returns NULL), the program exits with an error.
+*/
 void	load_wall(t_game *game)
 {
 	int			img_width;
@@ -35,12 +37,15 @@ void	load_wall(t_game *game)
 }
 
 /*
- * Renders wall tiles at all positions marked '1' in the map.
- * - Iterates over the entire map grid.
- * - For each tile with value '1', draws the wall texture.
- * - Uses a fixed tile size of 64 pixels to compute screen coordinates.
- * - Calls mlx_put_image_to_window() for each wall tile.
- */
+** draw_walls:
+** - Renders the wall image on all tiles in the map marked with '1'.
+** - Iterates through each row (y) and each column (x) of the map.
+** - For each '1' tile, computes its screen position by multiplying
+**   the tile's grid coordinates by the tile size (64 pixels).
+** - Calls mlx_put_image_to_window to draw the wall image at the correct
+**   position in the game window.
+** - Ensures that all walls are visually rendered in their correct locations.
+*/
 void	draw_walls(t_game *game)
 {
 	int	x;

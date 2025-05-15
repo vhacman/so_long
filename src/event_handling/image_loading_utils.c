@@ -13,15 +13,12 @@
 #include "so_long.h"
 
 /*
-** Removes trailing newline and carriage return characters from
-** each row of the map to normalize input.
-** - Iterates through all strings in `game->map`.
-** - Strips '\n' and '\r' from the end of each line by replacing
-**   them with a null-terminator.
-** - Prevents issues during tile comparisons and rendering logic.
-**
-** Parameters:
-** - game: pointer to the game structure containing the map.
+** clean_map:
+** - Iterates over all lines in game->map.
+** - Removes any trailing '\n' or '\r' characters by replacing them
+**   with '\0'.
+** - Ensures uniform string formatting across platforms.
+** - Prevents map parsing errors during validation and rendering.
 */
 void	clean_map(t_game *game)
 {

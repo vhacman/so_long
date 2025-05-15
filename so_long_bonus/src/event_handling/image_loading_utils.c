@@ -13,12 +13,13 @@
 #include "so_long_bonus.h"
 
 /*
- * Removes newline and carriage return characters from map rows.
- * - Ensures clean parsing and rendering by eliminating trailing
- *   control characters.
- * - Modifies each row in-place by replacing '\n' or '\r' with '\0'.
- * - Prevents logical errors in map validation and display.
- */
+** clean_map:
+** - Iterates over all lines in game->map.
+** - Removes any trailing '\n' or '\r' characters by replacing them
+**   with '\0'.
+** - Ensures uniform string formatting across platforms.
+** - Prevents map parsing errors during validation and rendering.
+*/
 void	clean_map(t_game *game)
 {
 	int	i;
@@ -39,11 +40,16 @@ void	clean_map(t_game *game)
 }
 
 /*
- * Prints an error message and terminates the program.
- * - Displays the message to stderr using ft_putstr_fd().
- * - If flag is 1, calls cleanup() to free all resources.
- * - Exits with status EXIT_FAILURE to indicate abnormal termination.
- */
+** Prints an error message to stderr and terminates the program.
+** - If `flag` is set to 1, invokes cleanup() to free game resources.
+** - Uses ft_putstr_fd() to print the error message.
+** - Exits with status code EXIT_FAILURE (1).
+**
+** Parameters:
+** - msg: error message to be printed.
+** - game: pointer to the game structure (used by cleanup if needed).
+** - flag: whether to call cleanup before exiting (1 = yes, 0 = no).
+*/
 void	exit_with_error(char *msg, t_game *game, int flag)
 {
 	ft_putstr_fd(msg, 2);
@@ -53,12 +59,21 @@ void	exit_with_error(char *msg, t_game *game, int flag)
 }
 
 /*
- * Validates characters used in the map file.
- * - Returns 1 if the character is allowed in the map layout.
- * - Allowed characters: '0' (empty), '1' (wall), 'C' (collectible),
- *   'E' (exit), 'P' (player), 'X' (enemy).
- * - Returns 0 for any invalid character.
- */
+** Validates whether a character is allowed in the map layout.
+** - Acceptable characters:
+**   '0' = empty space
+**   '1' = wall
+**   'C' = collectible
+**   'E' = exit
+**   'P' = player
+**   'X' = enemy (optional for bonus).
+**
+** Parameters:
+** - c: character to validate.
+**
+** Return:
+** - 1 if valid, 0 otherwise.
+*/
 int	is_valid_char(char c)
 {
 	return (c == '0' || c == '1' || c == 'C'

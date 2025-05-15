@@ -13,13 +13,23 @@
 #include "so_long_bonus.h"
 
 /*
- * Loads the player character's sprite images for both directions.
- * - Verifies both files have .xpm extensions before loading.
- * - Loads player_right.xpm and player_left.xpm using MLX.
- * - Stores images in game->img_player_right and img_player_left.
- * - Sets game->player_direction to 1 (facing right) by default.
- * - Exits with an error if either image fails to load properly.
- */
+** load_player:
+** - Loads the player's sprite images facing left and right.
+**
+** Steps:
+** 1. Validates that both image files have a ".xpm" extension.
+** 2. Loads the right-facing sprite from:
+**      "so_long_bonus/src/textures/player_right.xpm"
+**    and stores it in game->img_player_right.
+** 3. Loads the left-facing sprite from:
+**      "so_long_bonus/src/textures/player_left.xpm"
+**    and stores it in game->img_player_left.
+** 4. Initializes the player's facing direction to 1 (right).
+** 5. If either image fails to load, the program exits with an error.
+**
+** Required:
+** - game->mlx must be initialized before this function is called.
+*/
 void	load_player(t_game *game)
 {
 	int	img_width;
@@ -43,12 +53,21 @@ void	load_player(t_game *game)
 }
 
 /*
- * Draws the player at their current grid position.
- * - Uses a tile size of 64 pixels for coordinate scaling.
- * - Chooses image based on game->player_direction:
- *   1 = right-facing, -1 = left-facing.
- * - Calls mlx_put_image_to_window() to render sprite.
- */
+** draw_player:
+** - Draws the player sprite at its current position on the game window.
+**
+** Steps:
+** 1. Converts grid position (player_x, player_y) to pixel coordinates
+**    by multiplying by the tile size (64 pixels).
+** 2. Selects the sprite image based on game->player_direction:
+**      - If 1: uses the right-facing sprite.
+**      - If -1: uses the left-facing sprite.
+** 3. Uses mlx_put_image_to_window to render the sprite on the screen.
+**
+** Assumptions:
+** - The player sprite has already been loaded via load_player().
+** - Direction is set based on the most recent movement input.
+*/
 void	draw_player(t_game *game)
 {
 	int	tile_size;

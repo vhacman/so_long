@@ -13,17 +13,20 @@
 #include "so_long.h"
 
 /*
-** Loads the player's sprite images for both directions.
-** - Validates that the image files have a ".xpm" extension.
-** - Loads "player_right.xpm" into `img_player_right`.
-** - Loads "player_left.xpm" into `img_player_left`.
-** - Uses `mlx_xpm_file_to_image()` to load each image via the MLX API.
-** - Sets the initial player direction to 1 (facing right).
-** - If any image fails to load, terminates the program with an error.
-**
-** Parameters:
-** - game: pointer to the game structure where image
-**   handles and state are stored.
+** load_player:
+** - Loads two separate XPM images for the player character, one for
+**   facing right and one for facing left.
+** - Validates file extensions before attempting to load:
+**     - "src/textures/player_right.xpm"
+**     - "src/textures/player_left.xpm"
+** - Loads both images using mlx_xpm_file_to_image, which reads the XPM
+**   file and creates an MLX image pointer.
+** - Image dimensions (width and height) are retrieved but discarded.
+** - If either image fails to load (returns NULL), exits the program with
+**   a corresponding error message and frees resources via exit_with_error.
+** - Sets game->player_direction to 1, indicating the initial orientation
+**   of the player is right-facing. This will determine which sprite is
+**   used when drawing the player.
 */
 void	load_player(t_game *game)
 {
@@ -48,16 +51,23 @@ void	load_player(t_game *game)
 }
 
 /*
-** Renders the player's sprite at the correct position and orientation.
-** - Uses `player_direction` to select the correct sprite image:
-**   → 1 for right-facing, -1 for left-facing.
-** - Computes the drawing position by scaling `player_x` and `player_y`
-**   by the tile size (64 pixels).
-** - Calls `mlx_put_image_to_window()` to draw the sprite in the window.
-**
-** Parameters:
-** - game: pointer to the game structure containing player position,
-**         direction, image handles, and rendering context.
+** draw_player:
+** - Draws the correct player sprite onto the game window based on
+**   the direction the player is currently facing.
+** - Uses game->player_direction to select the image:
+**     - If 1 → draw img_player_right
+**     - If -1 → draw img_player_left
+** - Converts logical player coordinates (player_x, player_y) to
+**   pixel coordinates by multiplying by tile size (64), since each
+**   tile occupies a 64x64 region on screen.
+** - Calls mlx_put_image_to_window with:
+**     - game->mlx: the MLX context
+**     - game->window: the active game window
+**     - the selected player image
+**     - x position: player_x * 64
+**     - y position: player_y * 64
+** - Ensures the player is drawn at the correct position with the
+**   correct sprite image depending on movement direction.
 */
 void	draw_player(t_game *game)
 {

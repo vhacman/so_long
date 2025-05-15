@@ -35,31 +35,20 @@ static int	check_bounds(t_game *game, int new_x, int new_y)
 }
 
 /*
-** Processes the effect of stepping onto a map tile and determines if
-** movement is allowed.
-**
-** - If the tile is a wall ('1'), movement is blocked and returns 0.
-** - If the tile is a collectible ('C'), decreases the collectible
-**   counter (player picks it up).
-** - If the tile is the exit ('E'):
-**     - If all collectibles have been gathered, the player wins:
-**         - Sets the win flag to 1.
-**         - Resets win screen state to allow rendering.
-**         - Prints a victory message.
-**         - Returns 1 to allow movement onto the tile.
-**     - If not all collectibles are collected:
-**         - Blocks the movement (returns 0).
-**         - Triggers a one-time message to inform the player that the
-**           exit is not yet accessible (controlled by a flag and counter).
-**
-** Parameters:
-** - game: Pointer to the main game structure, which tracks game state,
-**   collectibles, exit condition, and messages.
-** - tile: Character representing the type of tile the player is stepping on.
-**
-** Return:
-** - Returns 1 if movement onto the tile is allowed.
-** - Returns 0 if movement is blocked (wall or incomplete exit).
+** handle_tile_effects:
+** - Interprets the content of the destination tile and determines if
+**   the player can move there.
+** - If tile is '1' (wall), movement is blocked.
+** - If tile is 'C' (collectible), decrements the collectible counter.
+** - If tile is 'E' (exit):
+**     - If all collectibles are collected:
+**         - Sets win state flags.
+**         - Prints "YOU WON".
+**         - Allows movement.
+**     - Otherwise:
+**         - Blocks movement.
+**         - Triggers one-time "exit blocked" message.
+** - Returns 1 if movement is allowed, 0 if blocked.
 */
 static int	handle_tile_effects(t_game *game, char tile)
 {
@@ -91,17 +80,11 @@ static int	handle_tile_effects(t_game *game, char tile)
 }
 
 /*
-** Checks whether the attempted move is legal.
-** - Verifies that the target tile is in bounds and not blocked.
-** - Applies tile-specific logic via handle_tile_effects().
-**
-** Parameters:
-** - game: pointer to the game structure.
-** - new_x: target x-coordinate.
-** - new_y: target y-coordinate.
-**
-** Return:
-** - 1 if the move is allowed, 0 otherwise.
+** is_valid_move:
+** - Determines if a move to (new_x, new_y) is allowed.
+** - First checks that the coordinates are within bounds.
+** - Then applies logic specific to the tile using handle_tile_effects.
+** - Returns 1 if move is valid, otherwise 0.
 */
 static int	is_valid_move(t_game *game, int new_x, int new_y)
 {
@@ -113,6 +96,7 @@ static int	is_valid_move(t_game *game, int new_x, int new_y)
 }
 
 /*
+** Update_player_position:
 ** Updates the player's position and modifies the game state accordingly.
 **
 ** - Calculates the new coordinates using the given dx/dy values.
@@ -155,21 +139,31 @@ static void	update_player_position(t_game *game, int dx, int dy)
 }
 
 /*
-** Handles the player's movement based on keyboard input.
+** move_player:
+** - Handles the movement attempt of the player by applying a directional
+**   offset (dx, dy) to the current position.
 **
-** - Calculates the new target position by applying dx and dy
-**   to the player's current coordinates.
-** - Checks if the destination cell is walkable using is_valid_move.
-** - If the move is valid, updates the player position and map state.
-** - Always redraws the game window, even if the move is invalid.
+** - Computes new_x and new_y by adding dx and dy to the player's current
+**   coordinates (game->player_x, game->player_y).
+**
+** - Calls is_valid_move to check if movement to (new_x, new_y) is allowed:
+**     - If the move is invalid (out of bounds, wall, blocked exit), the
+**       function skips movement and proceeds to redraw the window.
+**
+** - If the move is valid:
+**     - Calls update_player_position to apply changes (position and map state).
+**
+** - Regardless of move validity, calls render() at the end to refresh
+**   the entire window, ensuring the display is up to date after each input.
+**
+** - The function does not itself modify player coordinates or the map; it
+**   delegates that logic to update_player_position if the move is valid.
 **
 ** Parameters:
-** - game: Pointer to the main game structure containing the map,
-**   player position, and other game state.
-** - dx: Horizontal movement direction.
-**       Use -1 to move left, +1 to move right, 0 for no horizontal move.
-** - dy: Vertical movement direction.
-**       Use -1 to move up, +1 to move down, 0 for no vertical move.
+** - game: Pointer to the game structure containing player position and
+**         overall game state.
+** - dx: Horizontal offset to apply to player_x (e.g., -1 = left, 1 = right).
+** - dy: Vertical offset to apply to player_y (e.g., -1 = up, 1 = down).
 */
 void	move_player(t_game *game, int dx, int dy)
 {

@@ -13,12 +13,18 @@
 #include "so_long_bonus.h"
 
 /*
- * Builds the enemy's movement path using depth-first search.
- * - Starts from (x, y) and recursively explores 4 directions.
- * - Skips tiles that are out of bounds, walls ('1'), or already visited.
- * - Stops recursion if enemy_path_len exceeds MAX_PATH to avoid overflow.
- * - Stores each step in enemy_path and marks the tile as visited.
- */
+** build_enemy_path:
+** - Performs depth-first search (DFS) to construct the enemy's movement path.
+**
+** Logic:
+** 1. If coordinates are out of bounds, a wall, or already visited → return.
+** 2. If enemy_path_len exceeds MAX_PATH → return to avoid overflow.
+** 3. Mark current tile as visited and store its coordinates in enemy_path[].
+** 4. Recursively explore all four directions: right, left, down, up.
+**
+** Purpose:
+** - Builds a sequence of walkable positions for the enemy to follow.
+*/
 static void	build_enemy_path(t_game *game, int x, int y)
 {
 	if (x < 0 || y < 0 || x >= game->map_width || y >= game->map_height)
@@ -38,11 +44,18 @@ static void	build_enemy_path(t_game *game, int x, int y)
 }
 
 /*
- * Allocates memory for pathfinding structures.
- * - visited[][] is a 2D matrix to track explored tiles during DFS.
- * - enemy_path[] stores coordinates for the enemy's route.
- * - Exits the program if memory allocation fails at any step.
- */
+** generate_enemy_path:
+** - Prepares and triggers the enemy pathfinding process.
+**
+** Steps:
+** 1. Resets all values in game->visited[][] to 0.
+** 2. Initializes enemy_path_len to 0.
+** 3. Calls build_enemy_path to recursively fill game->enemy_path[].
+**
+** Parameters:
+** - game: pointer to the game state.
+** - x, y: starting position for the enemy’s DFS path generation.
+*/
 static void	generate_enemy_path(t_game *game, int x, int y)
 {
 	int	i;
@@ -64,12 +77,18 @@ static void	generate_enemy_path(t_game *game, int x, int y)
 }
 
 /*
- * Initializes the enemy’s pathfinding and state.
- * - Sets initial position and direction.
- * - Allocates memory for visited and path arrays.
- * - Generates the path using DFS from given (x, y).
- * - If no path is found, releases memory and exits with error.
- */
+** allocate_enemy_data:
+** - Allocates dynamic memory for enemy pathfinding structures.
+**
+** Allocates:
+** 1. game->visited: 2D array of ints used to mark explored tiles during DFS.
+** 2. game->enemy_path: array of t_point structs storing the enemy route.
+**
+** On failure:
+** - Exits with an error using exit_with_error.
+**
+** Required before calling any path generation function.
+*/
 static void	allocate_enemy_data(t_game *game)
 {
 	int	i;
@@ -91,11 +110,20 @@ static void	allocate_enemy_data(t_game *game)
 }
 
 /*
- * Loads XPM images for the enemy’s left and right directions.
- * - Validates file extensions to ensure .xpm format.
- * - Loads images into img_enemy_right and img_enemy_left.
- * - Exits with an error if image loading fails.
- */
+** init_enemy_path:
+** - Entry point to initialize the enemy's state and movement logic.
+**
+** Steps:
+** 1. Sets enemy starting position and direction.
+** 2. Allocates memory for pathfinding structures via allocate_enemy_data.
+** 3. Calls generate_enemy_path to compute movement path from (x, y).
+** 4. If no valid path is found (enemy_path_len == 0), frees all enemy
+**    resources and exits with an error.
+**
+** Parameters:
+** - game: pointer to the main game structure.
+** - x, y: starting coordinates of the enemy on the map.
+*/
 void	init_enemy_path(t_game *game, int x, int y)
 {
 	game->enemy_x = x;
@@ -112,12 +140,22 @@ void	init_enemy_path(t_game *game, int x, int y)
 	}
 }
 
-/* 
- * Loads enemy sprite images for left and right movement.
- * - Files: enemy_right.xpm and enemy_left.xpm.
- * - Stores result in game->img_enemy_right and game->img_enemy_left.
- * - Exits with error if either load fails.
- */
+/*
+** load_enemy_images:
+** - Loads the enemy’s sprite images for both directions (left/right).
+**
+** Steps:
+** 1. Validates that both image paths have the ".xpm" extension.
+** 2. Loads:
+**     - Right-facing enemy sprite into game->img_enemy_right.
+**     - Left-facing enemy sprite into game->img_enemy_left.
+** 3. Uses mlx_xpm_file_to_image to load images and store their width/height.
+** 4. If loading fails for either image, exits with an error.
+**
+** File paths:
+** - "so_long_bonus/src/textures/enemy_right.xpm"
+** - "so_long_bonus/src/textures/enemy_left.xpm"
+*/
 void	load_enemy_images(t_game *game)
 {
 	int			img_width;

@@ -40,17 +40,16 @@ void	load_exit(t_game *game)
 }
 
 /*
-** Renders the exit tile at the position of the first 'E' found in the map.
-** - Assumes each map tile is 64x64 pixels.
-** - Iterates through the map grid (2D array) searching for 'E'.
-** - When found, computes the pixel coordinates and places `img_exit`
-**   at that location using mlx_put_image_to_window().
-** - Exits immediately after rendering the first match.
-** - Assumes that only one exit tile ('E') exists in the map.
-**
-** Parameters:
-** - game: pointer to the game structure containing the map, window,
-**         and exit image handle.
+** draw_exit:
+** - Scans the entire game map for the first tile containing 'E'
+**   (the exit position).
+** - Once the 'E' is found, calculates its screen position by
+**   multiplying grid coordinates (x, y) by tile size (64).
+** - Draws the exit image at the computed pixel coordinates using
+**   mlx_put_image_to_window.
+** - Immediately returns after drawing, assuming only one exit exists.
+** - Requires game->map, game->img_exit, game->mlx, and game->window
+**   to be properly initialized.
 */
 void	draw_exit(t_game *game)
 {

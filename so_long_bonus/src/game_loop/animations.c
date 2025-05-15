@@ -13,16 +13,17 @@
 #include "so_long_bonus.h"
 
 /*
- * Updates the animation frame index for collectibles.
- * - Uses a static struct timeval variable (last_frame) to store the
- *   timestamp of the last frame update. Static ensures the variable
- *   retains its value between function calls.
- * - Calls gettimeofday() to get the current time (now).
- * - Calculates elapsed time in milliseconds between now and last_frame.
- * - If more than 200ms have passed, increments the frame index.
- * - Frame index is stored in game->collectible_frame and cycles from
- *   0 to 3 using modulo 4.
- */
+** update_collectible_frame:
+** - Controls timing for collectible animation updates.
+** - Uses a static struct timeval to store the last update time.
+** - This variable retains its value between function calls.
+** - On each call, gets the current time using gettimeofday().
+** - Calculates how many milliseconds have passed since last update.
+** - If more than 200ms passed, advances game->collectible_frame.
+** - Frame index cycles from 0 to 3 using modulo 4.
+** - Updates last_frame to the current time to restart the timer.
+** - Ensures consistent animation speed independent of loop rate.
+*/
 void	update_collectible_frame(t_game *game)
 {
 	static struct timeval	last_frame = {0};
@@ -40,16 +41,15 @@ void	update_collectible_frame(t_game *game)
 }
 
 /*
- * Draws all animated collectibles based on the current frame.
- * - Calls update_collectible_frame() to ensure correct timing and
- *   frame progression.
- * - Iterates through the map grid and finds tiles marked 'C'.
- * - For each 'C', places the current animation frame using 
- *   mlx_put_image_to_window().
- * - Uses game->img_collectibles[frame] for the image to display.
- * - Each tile is rendered with a 64x64 pixel spacing to match the
- *   grid layout in the game window.
- */
+** animate_collectibles:
+** - Renders all collectible tiles using the correct animation frame.
+** - First updates frame index by calling update_collectible_frame().
+** - Then scans the map for tiles marked with 'C' (collectibles).
+** - For each 'C', calculates screen coordinates (x * 64, y * 64).
+** - Draws the current frame image using mlx_put_image_to_window().
+** - Uses game->img_collectibles[game->collectible_frame] as source.
+** - Ensures all collectibles appear animated during gameplay.
+*/
 void	animate_collectibles(t_game *game)
 {
 	int	tile_size;

@@ -13,14 +13,15 @@
 #include "so_long.h"
 
 /*
-** Releases MLX graphical context and window resources.
-** - If both `mlx` and `window` are valid,
-** destroys the window and sets it to NULL.
-** - Destroys the display context and frees the `mlx` pointer.
-** - Sets `mlx` to NULL to avoid dangling references.
-**
-** Parameters:
-** - game: pointer to the game structure containing MLX handles.
+** free_mlx_context:
+** - Releases all MLX-related resources tied to the window and display.
+** - If both game->mlx and game->window are valid:
+**     - Destroys the window using mlx_destroy_window.
+**     - Sets game->window to NULL to avoid dangling pointer.
+** - If game->mlx is valid:
+**     - Destroys the display context using mlx_destroy_display.
+**     - Frees the MLX connection pointer.
+**     - Sets game->mlx to NULL for safety.
 */
 static void	free_mlx_context(t_game *game)
 {
@@ -38,13 +39,12 @@ static void	free_mlx_context(t_game *game)
 }
 
 /*
-** Frees all graphical assets and resets associated pointers.
-** - Destroys static images (sprites, backgrounds, screens, etc.).
-** - Sets image pointers to NULL using null_all_images().
-** - Destroys the MLX window and context using free_mlx_context().
-**
-** Parameters:
-** - game: pointer to the game structure containing image and MLX data.
+** free_graphics:
+** - Frees all loaded graphical assets and resets internal pointers.
+** - Calls free_static_images to destroy all loaded XPM images.
+** - Calls null_all_images to explicitly set all image pointers to NULL.
+** - Calls free_mlx_context to close and free the MLX graphical context.
+** - Ensures all graphical memory and window handles are released.
 */
 static void	free_graphics(t_game *game)
 {
@@ -54,13 +54,12 @@ static void	free_graphics(t_game *game)
 }
 
 /*
-** Frees the dynamically allocated memory for the game map.
-** - Iterates through each map row and frees it.
-** - Frees the entire map array after all rows are released.
-** - Safeguarded by checking if `game->map` is non-null.
-**
-** Parameters:
-** - game: pointer to the game structure containing the map.
+** free_map_data:
+** - Frees all memory allocated for the map (game->map).
+** - Iterates through each row of the 2D map array and frees it.
+** - Then frees the main map pointer.
+** - Protected by a check to ensure game->map is not NULL.
+** - Avoids memory leaks from dynamically loaded map data.
 */
 void	free_map_data(t_game *game)
 {
@@ -76,12 +75,11 @@ void	free_map_data(t_game *game)
 }
 
 /*
-** Performs a complete cleanup of the game's allocated resources.
-** - Frees graphics, textures, MLX context, and map data.
-** - Should be called before any program exit to ensure clean shutdown.
-**
-** Parameters:
-** - game: pointer to the game structure with all allocated resources.
+** cleanup:
+** - Top-level cleanup function called before exiting the program.
+** - Frees all graphics, textures, MLX handles, and the map.
+** - Delegates to free_graphics and free_map_data for modular cleanup.
+** - Ensures clean shutdown of all allocated resources.
 */
 void	cleanup(t_game *game)
 {

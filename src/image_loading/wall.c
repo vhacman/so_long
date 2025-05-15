@@ -40,14 +40,17 @@ void	load_wall(t_game *game)
 }
 
 /*
-** Renders the wall texture on each tile of the map that contains '1'.
-** - Iterates through all rows (y) and columns (x) of the map.
-** - For each tile that equals '1', draws the wall image at the
-**   corresponding screen coordinates: (x * 64, y * 64).
-** - Assumes each tile in the map corresponds to 64x64 pixels on screen.
+** draw_walls:
+** - Iterates over each tile of the game map.
+** - For every cell containing '1' (wall), draws the wall texture
+**   at screen position (x * 64, y * 64) using mlx_put_image_to_window.
+**   (Draw the wall image at the screen position corresponding to tile 
+**    (x, y), which is located x * 64 pixels from the left and y * 64 
+**    pixels from the top)
 **
-** Parameters:
-** - game: pointer to the game structure containing map data and image handle.
+** - Uses game->img_wall as the source image.
+** - Requires game->map, game->map_width, and game->map_height
+**   to be properly initialized.
 */
 void	draw_walls(t_game *game)
 {

@@ -12,11 +12,14 @@
 
 #include "so_long_bonus.h"
 
-/* 
- * Releases all MiniLibX resources and the game window.
- * If both mlx context and window exist, destroys the window.
- * Destroys the display, frees the mlx pointer, and nullifies it
- * to prevent memory leaks or access to freed memory.
+/*
+ ** free_mlx_context:
+ ** Releases all MiniLibX graphical resources and the game window.
+ ** If both mlx context and window exist:
+ **   - Destroys the window to free OS resources.
+ **   - Sets game->window to NULL to prevent invalid access.
+ ** Destroys the display connection and frees the mlx pointer.
+ ** Sets game->mlx to NULL to avoid dangling pointer usage.
  */
 static void	free_mlx_context(t_game *game)
 {
@@ -33,12 +36,13 @@ static void	free_mlx_context(t_game *game)
 	}
 }
 
-/* 
- * Frees all graphical assets used in the game.
- * Releases static images (e.g. walls, floor).
- * Releases animated images (e.g. player, enemy).
- * Resets all image pointers to NULL to avoid invalid access.
- * Finally, releases the mlx context via free_mlx_context().
+/*
+ ** free_graphics:
+ ** Frees all loaded graphical assets used in the game.
+ ** Calls functions to free static images like walls, floor, exit.
+ ** Calls functions to free animated images like player and enemy sprites.
+ ** Resets all image pointers in game struct to NULL to avoid invalid use.
+ ** Finally, calls free_mlx_context() to properly release MLX context.
  */
 static void	free_graphics(t_game *game)
 {
@@ -48,11 +52,13 @@ static void	free_graphics(t_game *game)
 	free_mlx_context(game);
 }
 
-/* 
- * Frees the map and related pathfinding memory.
- * Frees each row of the 2D map array, then the map itself.
- * Frees the dynamically allocated enemy_path array.
- * Frees the visited matrix used for pathfinding or validation.
+/*
+ ** free_map_data:
+ ** Frees all dynamic memory related to the game map and paths.
+ ** Frees each row of game->map, then frees the map array.
+ ** Frees enemy_path array if allocated.
+ ** Frees visited matrix rows and then the matrix pointer.
+ ** Ensures no memory leaks from map and pathfinding data.
  */
 void	free_map_data(t_game *game)
 {
@@ -76,11 +82,12 @@ void	free_map_data(t_game *game)
 	}
 }
 
-/* 
- * Main cleanup function called at exit or on error.
- * - Frees all graphical resources by calling free_graphics().
- * - Frees map data and related memory via free_map_data().
- * Ensures no memory leaks by deallocating all used resources.
+/*
+ ** cleanup:
+ ** Main cleanup function called on exit or error.
+ ** Calls free_graphics to free all image and MLX resources.
+ ** Calls free_map_data to free map and pathfinding memory.
+ ** Ensures all allocated memory and resources are freed.
  */
 void	cleanup(t_game *game)
 {

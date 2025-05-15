@@ -112,24 +112,35 @@ static void	check_args(int argc, char **argv)
 }
 
 /*
-** Entry point of the program. Initializes the game environment and 
-** starts the graphical event loop. 
-** Performs the following steps:
-** 1. Clears the `game` structure using `ft_bzero`.
-** 2. Validates command-line arguments.
-** 3. Initializes the game state and window via `init_game`.
-** 4. Loads the intro image to be displayed at startup.
-** 5. Sets intro animation flags (`intro_done` and `intro_frame`).
-** 6. Registers the `intro_loop` to run on each iteration of the MLX loop.
-** 7. Sets up keypress and window close event handlers.
-** 8. Starts the infinite MLX event loop for rendering and input handling.
+** main:
+** - Entry point of the program.
+** - Zeroes out the game structure using ft_bzero.
+** - Validates arguments using check_args.
+** - Initializes game state and loads the map with init_game.
+** - Loads the intro screen image.
+** - Sets animation flags for the intro sequence.
+** - Registers intro_loop as the loop hook in the MLX event system.
+** - Sets up event handlers:
+**   
+** mlx_loop_hook(game.mlx, intro_loop, &game):
+** - Registers a function (intro_loop) to be called continuously
+**   on each iteration of the MLX loop.
+** - This function is used for frame-by-frame logic, such as intro animation.
 **
-** Parameters:
-** - argc: number of command-line arguments.
-** - argv: array of command-line argument strings.
+** mlx_hook(game.window, 2, 1L << 0, handle_key, &game):
+** - Sets up an event hook for keypress events (event code 2).
+** - 1L << 0 is the bitmask corresponding to KeyPress.
+** - When a key is pressed, MLX calls handle_key with the game context.
 **
-** Return:
-** - Always returns 0 on successful termination.
+** mlx_hook(game.window, 17, 0, handle_destroy, &game):
+** - Sets up an event hook for window close (event code 17).
+** - Triggered when the user clicks the close button of the window.
+** - MLX calls handle_destroy to perform cleanup before exiting.
+**
+** mlx_loop(game.mlx):
+** - Enters the MLX event loop, which runs indefinitely.
+** - Continuously listens for registered events and updates the window.
+** - This call blocks and controls the lifetime of the graphical program.
 */
 int	main(int argc, char **argv)
 {

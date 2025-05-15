@@ -91,15 +91,24 @@ void	check_rectangular_and_walls(t_game *game)
 }
 
 /*
-** Main function to validate the structure and contents of the map.
-** - Calls `check_characters()` to verify symbols and count entities.
-** - Confirms all rows match the expected map width.
-** - Ensures exactly one player and one exit exist, and at least one collectible.
-** - Checks that the map is fully enclosed by wall tiles.
-** - Stores the collectible count in `game->collectibles`.
+** validate_map:
+** - Handles full validation of the loaded map structure and content.
 **
-** Parameters:
-** - game: pointer to the game structure containing the parsed map.
+** Steps:
+** 1. Initializes entity counters (players, exits, collectibles).
+** 2. Calls check_characters:
+**     - Validates all symbols.
+**     - Stores player position.
+**     - Counts P, E, C.
+** 3. Verifies all rows have the same width (redundant check for safety).
+** 4. Ensures:
+**     - Exactly one player ('P').
+**     - Exactly one exit ('E').
+**     - At least one collectible ('C').
+**     - Map is rectangular and enclosed via check_rectangular_and_walls.
+** 5. Saves the number of collectibles in game->collectibles.
+**
+** If any condition fails, exits the program with a descriptive error.
 */
 void	validate_map(t_game *game)
 {

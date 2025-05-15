@@ -12,12 +12,14 @@
 #include "so_long_bonus.h"
 
 /*
- * Loads the intro screen image displayed at game start.
- * - File: "src/textures/intro.xpm".
- * - Loads image into game->img_intro and stores its dimensions.
- * - Sets game->intro_shown to 0 to mark that it hasn't been displayed yet.
- * - Exits with an error if loading fails.
- */
+** load_intro_image:
+** - Loads the intro screen image from "so_long_bonus/src/textures/intro.xpm".
+** - Stores the image pointer in game->img_intro.
+** - Also stores the image’s width and height in game->intro_width and
+**   game->intro_height for later centering during display.
+** - Sets game->intro_shown to 0 to indicate the intro hasn't been rendered yet.
+** - If the image fails to load (returns NULL), exits the program with an error.
+*/
 void	load_intro_image(t_game *game)
 {
 	game->img_intro = mlx_xpm_file_to_image(game->mlx,
@@ -29,12 +31,14 @@ void	load_intro_image(t_game *game)
 }
 
 /*
- * Loads the image displayed when the player wins the game.
- * - File: "src/textures/won.xpm".
- * - Loads image into game->img_win and stores its dimensions.
- * - Initializes dimensions to 0 before loading.
- * - Exits with an error if the image fails to load.
- */
+** load_lost_image:
+** - Loads the "game over" image shown when the player loses.
+** - File path: "so_long_bonus/src/textures/lost.xpm".
+** - Loads the image into game->img_lost and stores the dimensions in
+**   game->img_lost_width and game->img_lost_height.
+** - No error handling shown here;
+** image must be used carefully or checked elsewhere.
+*/
 void	load_lost_image(t_game *game)
 {
 	game->img_lost = mlx_xpm_file_to_image(game->mlx,
@@ -43,10 +47,13 @@ void	load_lost_image(t_game *game)
 }
 
 /*
- * Loads the image to be shown when the player wins the game.
- * - File path: src/textures/won.xpm.
- * - Stores the image in game->img_win.
- */
+** load_win_image:
+** - Loads the victory screen image from "so_long_bonus/src/textures/won.xpm".
+** - Stores the resulting MLX image in game->img_win.
+** - Retrieves the image’s width and height into game->img_win_width and
+**   game->img_win_height, used to position it on screen.
+** - If loading fails, the program exits immediately with an error message.
+*/
 void	load_win_image(t_game *game)
 {
 	game->img_win_width = 0;

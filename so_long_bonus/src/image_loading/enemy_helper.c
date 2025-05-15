@@ -13,12 +13,19 @@
 #include "so_long_bonus.h"
 
 /*
- * Finds the first empty tile ('0') on the map and spawns the enemy there.
- * - Iterates through the 2D map grid row by row.
- * - When a free tile is found, calls init_enemy_path() to initialize
- *   enemy position and movement path.
- * - If no free tile is available, exits the program with an error.
- */
+** spawn_enemy:
+** - Locates the first available empty tile ('0') on the map to place the enemy.
+**
+** Steps:
+** 1. Iterates over the entire 2D map grid.
+** 2. When a '0' tile is found, calls init_enemy_path() to:
+**     - Set the enemy’s starting position.
+**     - Generate its movement path.
+** 3. If no empty tile is found, terminates with an error.
+**
+** Purpose:
+** - Dynamically spawns the enemy in a valid location at runtime.
+*/
 void	spawn_enemy(t_game *game)
 {
 	int	x;
@@ -43,11 +50,17 @@ void	spawn_enemy(t_game *game)
 }
 
 /*
- * Initializes all enemy-related state and assets.
- * - Loads enemy sprite images using load_enemy_images().
- * - Places the enemy on the map by calling spawn_enemy().
- * - Sets up its pathfinding structure for future movement.
- */
+** load_enemy:
+** - Initializes all enemy-related assets and state.
+**
+** Steps:
+** 1. Loads the enemy's sprite images (left and right) via load_enemy_images().
+** 2. Finds a valid tile and spawns the enemy using spawn_enemy().
+**
+** Assumptions:
+** - This function is called once during the game's asset loading phase.
+** - Requires game->map to be fully loaded and validated.
+*/
 void	load_enemy(t_game *game)
 {
 	load_enemy_images(game);
@@ -55,11 +68,20 @@ void	load_enemy(t_game *game)
 }
 
 /*
- * Draws the enemy sprite at its current map position.
- * - Uses a fixed tile size of 64 pixels for coordinate scaling.
- * - Displays img_enemy_right if game->enemy_dir is 1 (moving right).
- * - Otherwise displays img_enemy_left for leftward movement.
- */
+** draw_enemy:
+** - Renders the enemy sprite at its current position in the game window.
+**
+** Steps:
+** 1. Converts grid coordinates (enemy_x, enemy_y) to pixel coordinates by
+**    multiplying by the tile size (64).
+** 2. Selects the correct sprite:
+**     - img_enemy_right if enemy_dir == 1.
+**     - img_enemy_left otherwise.
+** 3. Draws the selected sprite using mlx_put_image_to_window.
+**
+** Purpose:
+** - Visualizes the enemy in its current location and orientation.
+*/
 void	draw_enemy(t_game *game)
 {
 	int	tile_size;
@@ -76,12 +98,19 @@ void	draw_enemy(t_game *game)
 }
 
 /*
- * Frees memory used for enemy movement and pathfinding.
- * - Frees each row in the visited matrix if it exists.
- * - Frees the enemy_path array used for storing path steps.
- * - Sets visited and enemy_path pointers to NULL after freeing
- *   to avoid dangling references.
- */
+** free_enemy_resources:
+** - Releases memory allocated for enemy pathfinding.
+**
+** Steps:
+** 1. Frees each row of the visited matrix, if it exists.
+** 2. Frees the visited pointer array.
+** 3. Frees the enemy_path array storing the enemy’s route.
+** 4. Sets both pointers (visited and enemy_path) to NULL
+**  to avoid dangling references.
+**
+** Called:
+** - On game exit or when path generation fails.
+*/
 void	free_enemy_resources(t_game *game)
 {
 	int	i;
