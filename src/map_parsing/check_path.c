@@ -25,7 +25,7 @@ static void	flood_fill(char **map, int row, int col, int height)
 {
 	if (row < 0 || col < 0 || row >= height || col >= (int)ft_strlen(map[0]))
 		return ;
-	if (map[row][col] == '1' || map[row][col] == 'F')
+	if (map[row][col] == '1' || map[row][col] == 'F' || map[row][col] == 'E')
 		return ;
 	map[row][col] = 'F';
 	flood_fill(map, row + 1, col, height);
