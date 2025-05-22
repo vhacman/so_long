@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   check_path_utils.c                                 :+:      :+:    :+:   */
+/*   .c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vhacman <vhacman@student.42roma.it>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -54,7 +54,7 @@ int	check_remaining_elements(char **map_copy, int map_height)
 		j = 0;
 		while (map_copy[i][j])
 		{
-			if (map_copy[i][j] == 'C' || map_copy[i][j] == 'E')
+			if (map_copy[i][j] == 'C')
 				valid = 0;
 			j++;
 		}
